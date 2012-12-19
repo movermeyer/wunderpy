@@ -1,1 +1,1 @@
-from .wunderlist_api import Wunderlist
+from .wunderlist import Wunderlist
