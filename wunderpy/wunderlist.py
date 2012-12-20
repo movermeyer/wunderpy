@@ -7,8 +7,17 @@ class Wunderlist(object):
         self.email = email
         self.password = password
         self.logged_in = False
-        self.user_data = None
+        self.token = None
+        self.id = None
+
+        self.current_tasks = None
 
     def login(self):
-        self.user_data = self.api.login(self.email, self.password)
+        user_data = self.api.login(self.email, self.password)
+        self.logged_in = True
+        self.token = user_data["token"]
+        self.id = user_data["id"]
+
+        self.current_tasks = self.api.get_tasks(self.token)
+
         return True  # an exception will be raised if logging in didn't work
