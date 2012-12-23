@@ -25,7 +25,7 @@ class API(object):
     def me(self):
         me_url = self.api_url + "/me"
         me_request = requests.get(me_url, headers=self.header)
-    
+
         if me_request.status_code == 200:
             return me_request.json()
         else:
@@ -41,16 +41,17 @@ class API(object):
             raise Exception("Get tasks error", tasks_request.status_code)
 
     def add_task(self, title, list_id, due_date=None starred=False):
-        if starred == False:
+        if starred is False:
             starred = 0
-        elif starred == True:
+        elif starred is True:
             starred = 1
 
         tasks_url = self.api_url + "/me/tasks"
         body = {"list_id": list_id, "title": title, "starred": starred}
         if due_date:
             body["due_date"] = due_date  # should be in ISO format
-        tasks_request = requests.post(tasks_url, data=body, headers=self.header)
+        tasks_request = requests.post(tasks_url, data=body,
+                                      headers=self.header)
 
         if tasks_request.status_code == 201:  # Created
             return tasks_request.json()
@@ -80,7 +81,7 @@ class API(object):
     def get_lists(self):
         lists_url = self.api_url + "/me/lists"
         lists_request = requests.get(lists_url, headers=self.header)
-    
+
         if lists_request.status_code == 200:
             return lists_request.json()
         else:
@@ -90,7 +91,7 @@ class API(object):
         lists_url = self.api_url + "/me/lists"
         body = {"title": list_name}
         list_request = requests.post(lists_url, data=body,
-                                      headers=self.header)
+                                     headers=self.header)
 
         if list_request.status_code == 201:
             return list_request.json()
@@ -160,4 +161,3 @@ class API(object):
             return friends_request.json()
         else:
             raise Exception("Get friends error", friends_request.status_code)
-
