@@ -17,7 +17,17 @@ class API(object):
         if login_request.status_code == 200:  # All good
             user_info = login_request.json()
             self.token = user_info["token"]
-            self.header = {"Authorization": "Bearer: " + self.token}
+
+            # reporting as the mac app here because there isn't a public API
+            self.header = {"Authorization": "Bearer " + self.token,
+                           "Content-Type": "application/json; charset=utf-8",
+                           "Accept-Encoding": "gzip",
+                           "X-6W-Product": "Wunderlist",
+                           "X-6W-Product-Version": "2.0",
+                           "X-6W-Platform": "Mac",
+                           "X-6W-System": "x86_64",
+                           "X-6W-System-Version": "12C54"}
+
             return user_info
         else:
             raise Exception("Login error", login_request.status_code)
@@ -40,7 +50,7 @@ class API(object):
         else:
             raise Exception("Get tasks error", tasks_request.status_code)
 
-    def add_task(self, title, list_id, due_date=None starred=False):
+    def add_task(self, title, list_id, due_date=None, starred=False):
         if starred is False:
             starred = 0
         elif starred is True:
