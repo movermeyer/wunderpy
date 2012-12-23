@@ -18,6 +18,6 @@ class Wunderlist(object):
         self.token = user_data["token"]
         self.id = user_data["id"]
 
-        self.current_tasks = self.api.get_tasks()
+        self.current_tasks = self.api.get_all_tasks()
 
         return True  # an exception will be raised if logging in didn't work
