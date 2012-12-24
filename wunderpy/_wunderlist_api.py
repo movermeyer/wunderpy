@@ -5,7 +5,6 @@ class API(object):
     def __init__(self, url="https://api.wunderlist.com", request_timeout=30):
         self.api_url = url
         self.timeout = request_timeout
-        self.token = None  # needed for just about everything, so we'll save it
         self.header = None  # needed for almost every request
 
     def login(self, email, password):
@@ -16,17 +15,16 @@ class API(object):
                                       timeout=self.timeout)
         if login_request.status_code == 200:  # All good
             user_info = login_request.json()
-            self.token = user_info["token"]
 
             # reporting as the mac app here because there isn't a public API
-            self.header = {"Authorization": "Bearer " + self.token,
-                           "Content-Type": "application/json; charset=utf-8",
-                           "Accept-Encoding": "gzip",
-                           "X-6W-Product": "Wunderlist",
-                           "X-6W-Product-Version": "2.0",
-                           "X-6W-Platform": "Mac",
-                           "X-6W-System": "x86_64",
-                           "X-6W-System-Version": "12C54"}
+            self.header = {"Authorization": "Bearer " + user_info["token"]}
+                           #"Content-Type": "application/json; charset=utf-8",
+                           #"Accept-Encoding": "gzip",
+                           #"X-6W-Product": "Wunderlist",
+                           #"X-6W-Product-Version": "2.0",
+                           #"X-6W-Platform": "Mac",
+                           #"X-6W-System": "x86_64",
+                           #"X-6W-System-Version": "12C54"}
 
             return user_info
         else:
