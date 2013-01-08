@@ -81,6 +81,18 @@ class API(object):
         else:
             raise Exception("Set task note error", task_request.status_code)
 
+    def set_task_due_date(self, task_id, due_date, recurrence_count=1):
+        task_url = self.api_url + "/" + task_id
+        body = {"due_date": due_date, "recurrence_count": recurrence_count}
+        task_request = requests.put(task_url, data=body,
+                                    headers=self.header,
+                                    timeout=self.timeout)
+
+        if task_request.status_code == 200:
+            return task_request.json()
+        else:
+            raise Exception("Set task due date error")
+
     def delete_task(self, task_id):
         task_url = self.api_url + "/" + task_id
         task_request = requests.delete(task_url, headers=self.header,
