@@ -1,4 +1,4 @@
-from ._wunderlist_api import API
+from ._api import API
 
 
 class Wunderlist(object):
