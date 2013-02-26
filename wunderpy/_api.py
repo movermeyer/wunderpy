@@ -18,13 +18,6 @@ class API(object):
 
             # reporting as the mac app here because there isn't a public API
             self.header = {"Authorization": "Bearer " + user_info["token"]}
-                           #"Content-Type": "application/json; charset=utf-8",
-                           #"Accept-Encoding": "gzip",
-                           #"X-6W-Product": "Wunderlist",
-                           #"X-6W-Product-Version": "2.0",
-                           #"X-6W-Platform": "Mac",
-                           #"X-6W-System": "x86_64",
-                           #"X-6W-System-Version": "12C54"}
 
             return user_info
         else:
