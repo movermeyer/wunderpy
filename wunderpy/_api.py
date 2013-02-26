@@ -139,6 +139,18 @@ class API(object):
             raise Exception("Get reminders error",
                             reminders_request.status_code)
 
+    def set_reminder_for_task(self, task_id, date):
+        reminders_url = self.api_url + "/me/reminders"
+        body = {"task_id": task_id, "date": date}  # date is in ISO date format
+        reminders_request = requests.post(reminders_url, headers=self.header,
+                                         data=body, timeout=self.timeout)
+
+        if reminders_request.status_code == 200:
+            return reminders_request.json()
+        else:
+            raise Exception("Set reminder error",
+                            reminders_request.status_code)
+
     def get_shares(self):
         shares_url = self.api_url + "/me/shares"
         shares_request = requests.get(shares_url, headers=self.header,
