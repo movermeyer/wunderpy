@@ -8,14 +8,15 @@ Wunderpy Docs
 
 .. toctree::
    :maxdepth: 2
+   
 
 Wunderlist
 ==========
 .. autoclass:: wunderpy.wunderlist.Wunderlist
    :members:
 
-API
-====
+API Calls
+=========
 .. autoclass:: wunderpy._api.API
    :members:
 
