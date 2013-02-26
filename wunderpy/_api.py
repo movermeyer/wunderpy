@@ -1,13 +1,44 @@
+'''
+.. module:: _api
+    :synopsis: API calls to Wunderlist.
+'''
+
 import requests
 
 
 class API(object):
+    '''Ultimately handles all calls to Wunderlist.
+    
+    The methods in this class simply send requests to Wunderlist.
+    It's meant to only be used by the :class:`Wunderlist` class.
+    '''
+
     def __init__(self, url="https://api.wunderlist.com", request_timeout=30):
+        '''
+        :param url: URL of the API that will be used.
+        :type url: str.
+
+        :param request_timeout: Timeout value (seconds) for all requests.
+        :type request_timeout: int.
+        '''
+
         self.api_url = url
         self.timeout = request_timeout
         self.header = None  # needed for almost every request
 
     def login(self, email, password):
+        '''Login to Wunderlist.
+        
+        :param email: The account's email address.
+        :type email: str.
+
+        :param password: The account's password.
+        :type password: str.
+        
+        :returns: bool -- Whether the login was successful.
+        :raises: Exception
+        '''
+
         login_url = self.api_url + "/login"
         request_body = {"email": email, "password": password}
 
