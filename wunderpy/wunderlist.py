@@ -1,8 +1,24 @@
+'''
+.. module:: wunderlist
+'''
+
 from ._api import API
 
 
 class Wunderlist(object):
+    '''A basic Wunderlist client.
+    
+    This wraps the calls from :class:`API`.
+    '''
+
     def __init__(self, email, password):
+        '''
+        :param email: The account's email address.
+        :type email: str
+        :param password: The account's password.
+        :type password: str
+        '''
+
         self._api = API()
         self._email = email
         self._password = password
@@ -14,6 +30,11 @@ class Wunderlist(object):
         self.lists = []
 
     def login(self):
+        '''Login to Wunderlist.
+        
+        :returns: bool -- If the login was successful.
+        '''
+
         user_data = self._api.login(self._email, self._password)
         self.logged_in = True
         self._token = user_data["token"]
@@ -22,6 +43,11 @@ class Wunderlist(object):
         return True  # an exception will be raised if logging in didn't work
 
     def get_task_lists(self):
+        '''Populate the lists with all tasks.
+        
+        :returns: bool -- If it was able to acquire the tasks.
+        '''
+
         # get tasks so we can add them to their appropriate list later
         tasks = []
         for i in self._api.get_all_tasks():
@@ -65,6 +91,21 @@ class Wunderlist(object):
 
     def add_task(self, title, list_title="inbox", note=None,
                  due_date=None, starred=False):
+        '''Create a new task.
+        
+        :param title: The task's name.
+        :type title: str
+        :param list_title: The title of the list that the task will go in.
+        :type list_title: str
+        :param note: An additional note in the task.
+        :type note: str or None
+        :param due_date: The due date/time for the task in ISO format.
+        :type due_date: str or None
+        :param starred: If the task should be starred.
+        :type starred: bool
+        :returns: bool -- If it was able to add the task.
+        '''
+
         list_id = [l["id"] for l in self.lists if l["title"] == list_title][0]
         task = self._api.add_task(title, list_id, due_date=due_date,
                                   starred=starred)
