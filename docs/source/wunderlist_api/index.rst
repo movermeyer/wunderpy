@@ -4,7 +4,8 @@ Wunderlist API
 
 This section is for documentation of the otherwise private and undocumented Wunderlist 2 API.
 
-The API is RESTful, and can be found at https://api.wunderlist.com.
+The API is RESTful and returns data serialized with JSON.
+It can be found at https://api.wunderlist.com.
 
 Contents
 ========
