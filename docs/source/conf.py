@@ -46,8 +46,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Wunderpy'
-copyright = u'2013, bsmt'
+project = u'wunderpy'
+copyright = u'2013'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -170,7 +170,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Wunderpydoc'
+htmlhelp_basename = 'wunderpydoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -233,8 +233,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Wunderpy', u'Wunderpy Documentation',
-   u'bsmt', 'Wunderpy', 'One line description of project.',
+  ('index', 'wunderpy', u'Wunderpy Documentation',
+   u'bsmt', 'wunderpy', 'One line description of project.',
    'Miscellaneous'),
 ]
 
