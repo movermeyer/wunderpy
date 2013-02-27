@@ -14,7 +14,8 @@ class API(object):
     .. note::
         All requests (except for login) require an authentication header
         using a token received from the login request.
-        The values to go into the header are {"Authorization": "Bearer " + token}.
+        The values to go into the header are
+        {"Authorization": "Bearer " + token}.
 
     .. |url| replace:: API_URL
     '''
