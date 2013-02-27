@@ -51,7 +51,6 @@ class API(object):
         if login_request.status_code == 200:  # All good
             user_info = login_request.json()
 
-            # reporting as the mac app here because there isn't a public API
             self.header = {"Authorization": "Bearer " + user_info["token"]}
 
             return user_info
