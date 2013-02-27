@@ -2,7 +2,7 @@ Lists
 =====
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     lists
     list_id
