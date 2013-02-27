@@ -3,7 +3,7 @@
 
 Log in to Wunderlist.
 
-The token received will be used for every other request to authenticate yourself.
+The token received (key is "token") will be used for every other request to authenticate yourself.
 The key is "Authorization", and the value is "Bearer " + token.
 
 POST

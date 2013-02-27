@@ -13,6 +13,7 @@ Contents
 .. toctree::
     :maxdepth: 3
 
+    auth
     account/index
     tasks/index
     lists/index
