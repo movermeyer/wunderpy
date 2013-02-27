@@ -24,6 +24,7 @@ Contents
    examples
    wunderlist
    _api
+   wunderlist_api/index 
 
 Indices and tables
 ==================
