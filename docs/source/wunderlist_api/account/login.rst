@@ -8,8 +8,8 @@ The key is "Authorization", and the value is "Bearer " + token.
 
 POST
 ----
-Params
-""""""
+Required Parameters
+"""""""""""""""""""
 :email: Your account's email.
 :password: You account's password.
 
