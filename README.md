@@ -1,7 +1,7 @@
 wunderpy
 ========
 
-The goal of this project is to make [Wunderlist's](https://wunderlist.com) private and undocumented API less private and better documented, while also providing a python client implementation.
+The goal of this project is to make [Wunderlist's](https://wunderlist.com) private and undocumented API less private and better documented, while also providing a python client implementation. I've explained how I figured out the API in a blog post [here](http://bsmt.me/blog/2013/03/02/reverse-engineering-the-wunderlist-api/), in case anyone is curious or wants to contribute.
 
 You can read the documentation at [readthedocs.](https://wunderpy.readthedocs.org/en/latest/)
 
