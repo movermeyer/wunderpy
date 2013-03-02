@@ -4,7 +4,7 @@ Account
 Calls related to your account.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     login
     me
