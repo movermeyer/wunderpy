@@ -6,3 +6,4 @@ Lists
 
     lists
     list_id
+    shares
