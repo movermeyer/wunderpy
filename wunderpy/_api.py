@@ -39,7 +39,7 @@ class API(object):
         :type email: str
         :param password: The account's password.
         :type password: str
-        :returns: bool -- Whether the login was successful.
+        :returns: dict -- Containing user information.
         :raises: Exception
         '''
 
