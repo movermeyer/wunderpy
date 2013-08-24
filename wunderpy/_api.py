@@ -3,6 +3,7 @@
 '''
 
 import requests
+import json
 
 class API(object):
     '''Ultimately handles all calls to Wunderlist.
