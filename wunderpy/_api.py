@@ -11,7 +11,7 @@ class API(object):
     This class simply provides facilities for sending requests using the batch
     api or regular "real-time" requests. See the Request class and its
     class methods for objects encapsulating certain API calls, those objects
-    can then be passed to queue_request or send_request.
+    can then be passed to queue_requests or send_request.
     
     .. note::
         All requests (except for login) require an authentication header
@@ -33,21 +33,53 @@ class API(object):
 
         self.api_url = url
         self.timeout = request_timeout
-        self.header = {}  # needed for almost every request
+        self.header = {"Content-Type": "application/json"}
 
-    def queue_request(self, request):
-        '''Queue a request for later, when it will be sent using the batch api.
+    def login(self, email, password):
+        '''Login to Wunderlist.
+    
+        :param email: The account's email address.
+        :type email: str
+        :param password: The account's password.
+        :type password: str
+        :returns: dict -- Containing user information.
+        '''
+    
+        request_body = {"email": email, "password": password}
+        self._send_request(Request("POST", "/login", request_body))
+        user_info = self._send_request("POST", "/login", request_body)
+        self.header["Authorization"] = "Bearer " + user_info["token"]
+
+    def queue_requests(self, *api_requests):
+        '''Queues requests for later, when they will be sent as a batch.        
+
+        Returns a generator which will yield the server response for each
+        request in the order they were supplied.
         
-        Returns a function which will send the batch request if needed,
-        and returns the result for the appropriate request.
-        
-        :param request: A valid Request object for the request.
-        :type request_method: Request
-        :returns: callable
+        :param api_requests: Valid Request objects.
+        :type requests: Request
+        :yields: dict
         '''
 
-        pass
+        ops = []
+        for request in api_requests:
+            operation = request.batch_format()
+            ops.append(operation)
 
+        request_body = {"ops": ops, "sequential": True}
+        request_body = json.dumps(request_body)
+        batch_url = "{}/batch".format(self.url)
+        r = requests.post(batch_url, data=request_body,
+                          headers=self.header, timeout=self.timeout)
+        # batch status code is always 200, so we don't really need to check
+        responses = r.json()
+        for response in responses["results"]:
+            # but we should check the status code for each request
+            if response["status"] < 300:  # since 2xx is usually alright
+                yield response["body"]
+            else:
+                raise Exception(response["status"])
+        
     def send_request(self, request):
         '''Send a single request to Wunderlist in real time.
         
@@ -68,27 +100,12 @@ class API(object):
         
         request_url = "{}{}".format(self.api_url, request.path)
         request = function_for_request_method(request.method)
-        r = request(request_url, data=request.body, headers=self.header,
-                    timeout=self.timeout)
-        if r.status_code == 200:
+        r = request(request_url, data=request.body_json,
+                    headers=self.header, timeout=self.timeout)
+        if r.status_code < 300:
             return r.json()
         else:
             raise Exception(r.status_code)
-
-    def login(self, email, password):
-        '''Login to Wunderlist.
-
-        :param email: The account's email address.
-        :type email: str
-        :param password: The account's password.
-        :type password: str
-        :returns: dict -- Containing user information.
-        '''
-
-        request_body = {"email": email, "password": password}
-        self._queue_request(Request("POST", "/login", request_body))
-        user_info = self._send_request("POST", "/login", request_body)
-        self.header["Authorization"] = "Bearer " + user_info["token"]
  
 
 class Request(object):
@@ -97,14 +114,23 @@ class Request(object):
         '''
         :param method: HTTP method to use.
         :type method: str
-        :param path: URL path for the API call.
+        :param path: URL path for the API call. Must have prefix /.
         :type path: str
         :param body: The HTTP request's data/body.
         :type body: dict
         '''
         self.method = method
         self.path = path
-        self.body = body
+        if not body:
+            self.body = {}
+        else:
+            self.body = body
+        self.body_json = json.dumps(body)
+
+    def batch_format(self):
+        op = {"method": self.method, "url": self.path, \
+              "params": self.body_dict}
+        return op
 
     @classmethod
     def me(self):
