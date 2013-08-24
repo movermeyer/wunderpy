@@ -4,12 +4,13 @@
 
 import requests
 
-
 class API(object):
     '''Ultimately handles all calls to Wunderlist.
-    
-    The methods in this class simply send requests to Wunderlist.
-    It's meant to only be used by the :class:`Wunderlist` class.
+        
+    All of the API call methods simply return Request objects with the
+    relevant information. It's up to something else to actually send it
+    using either the Request's queue_request or send_request, which uses the 
+    batch api or regular "real time" requests, respectively.
     
     .. note::
         All requests (except for login) require an authentication header
@@ -20,7 +21,8 @@ class API(object):
     .. |url| replace:: API_URL
     '''
 
-    def __init__(self, url="https://api.wunderlist.com", request_timeout=30):
+    def __init__(self, url="https://api.wunderlist.com", 
+                 request_timeout=30):
         '''
         :param url: URL of the API that will be used.
         :type url: str
@@ -30,7 +32,47 @@ class API(object):
 
         self.api_url = url
         self.timeout = request_timeout
-        self.header = None  # needed for almost every request
+        self.header = {}  # needed for almost every request
+
+    def queue_request(self, request):
+        '''Queue a request for later, when it will be sent using the batch api.
+        
+        Returns a function which will send the batch request if needed,
+        and returns the result for the appropriate request.
+        
+        :param request: A valid Request object for the request.
+        :type request_method: Request
+        :returns: callable
+        '''
+
+        pass
+
+    def send_request(self, request):
+        '''Send a single request to Wunderlist in real time.
+        
+        :param request: A valid Request object for the request.
+        :type request_method: Request
+        :returns: dict:
+        '''
+    
+        def function_for_request_method(method):
+            if method == "GET":
+                return requests.get
+            elif method == "POST":
+                return requests.post
+            elif method == "PUT":
+                return requests.put
+            elif method == "DELETE":
+                return requests.delete
+        
+        request_url = "{}{}".format(self.api_url, request.path)
+        request = function_for_request_method(request.method)
+        r = request(request_url, data=request.body, headers=self.header,
+                    timeout=self.timeout)
+        if r.status_code == 200:
+            return r.json()
+        else:
+            raise Exception(r.status_code)
 
     def login(self, email, password):
         '''Login to Wunderlist.
@@ -40,54 +82,30 @@ class API(object):
         :param password: The account's password.
         :type password: str
         :returns: dict -- Containing user information.
-        :raises: Exception
         '''
 
-        login_url = self.api_url + "/login"
         request_body = {"email": email, "password": password}
-
-        login_request = requests.post(login_url, data=request_body,
-                                      timeout=self.timeout)
-        if login_request.status_code == 200:  # All good
-            user_info = login_request.json()
-
-            self.header = {"Authorization": "Bearer " + user_info["token"]}
-
-            return user_info
-        else:
-            raise Exception("Login error", login_request.status_code)
-
+        self._queue_request(Request("POST", "/login", request_body))
+        user_info = self._send_request("POST", "/login", request_body)
+        self.header["Authorization"] = "Bearer " + user_info["token"]
+ 
+    @property
     def me(self):
-        '''Get info about the logged in user
+        '''Request for /me, which returns user information.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        me_url = self.api_url + "/me"
-        me_request = requests.get(me_url, headers=self.header,
-                                  timeout=self.timeout)
+        return Request("GET", "/me", body=None)
 
-        if me_request.status_code == 200:
-            return me_request.json()
-        else:
-            raise Exception("Get me error", me_request.status_code)
-
+    @property
     def get_all_tasks(self):
         '''Get every task associated with the account.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        tasks_url = self.api_url + "/me/tasks"
-        tasks_request = requests.get(tasks_url, headers=self.header,
-                                     timeout=self.timeout)
-
-        if tasks_request.status_code == 200:
-            return tasks_request.json()
-        else:
-            raise Exception("Get tasks error", tasks_request.status_code)
+        return Request("GET", "/me/tasks", body=None)
 
     def add_task(self, title, list_id, due_date=None, starred=False):
         '''Add a task to a list.
@@ -100,8 +118,7 @@ class API(object):
         :type due_date: str
         :param starred: Whether the task should be starred.
         :type starred: bool
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
         if starred is False:
@@ -109,18 +126,11 @@ class API(object):
         elif starred is True:
             starred = 1
 
-        tasks_url = self.api_url + "/me/tasks"
         body = {"list_id": list_id, "title": title, "starred": starred}
         if due_date:
             body["due_date"] = due_date  # should be in ISO format
-        tasks_request = requests.post(tasks_url, data=body,
-                                      headers=self.header,
-                                      timeout=self.timeout)
 
-        if tasks_request.status_code == 201:  # Created
-            return tasks_request.json()
-        else:
-            raise Exception("Add task error", tasks_request.status_code)
+        return Request("POST", "/me/tasks", body)
 
     def set_note_for_task(self, note, task_id):
         '''Set a task's note field.
@@ -129,20 +139,12 @@ class API(object):
         :type note: str
         :param task_id: The id of the task.
         :type task_id: str
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        task_url = self.api_url + "/" + task_id
+        path = "/{}".format(task_id)
         body = {"note": note}
-        task_request = requests.put(task_url, data=body,
-                                    headers=self.header,
-                                    timeout=self.timeout)
-
-        if task_request.status_code == 200:
-            return task_request.json()  # new task info
-        else:
-            raise Exception("Set task note error", task_request.status_code)
+        return Request("PUT", path, body)
 
     def set_task_due_date(self, task_id, due_date, recurrence_count=1):
         '''Set a task's due date.
@@ -153,74 +155,43 @@ class API(object):
         :type due_date: str
         :param recurrence_count: Not completely sure yet.
         :type recurrence_count: int
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        task_url = self.api_url + "/" + task_id
+        path = "/{}".format(task_id)
         body = {"due_date": due_date, "recurrence_count": recurrence_count}
-        task_request = requests.put(task_url, data=body,
-                                    headers=self.header,
-                                    timeout=self.timeout)
-
-        if task_request.status_code == 200:
-            return task_request.json()
-        else:
-            raise Exception("Set task due date error")
+        return Request("PUT", path, body)
 
     def delete_task(self, task_id):
         '''Delete a task.
         
         :param task_id: The task's id.
         :type task_id: str
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        task_url = self.api_url + "/" + task_id
-        task_request = requests.delete(task_url, headers=self.header,
-                                       timeout=self.timeout)
+        path = "/{}".format(task_id)
+        return Request("DELETE", path, body=None)
 
-        if task_request.status_code == 200:
-            return True  # server doesn't respond with anything
-        else:
-            raise Exception("Delete task error", task_request.status_code)
-
+    @property
     def get_lists(self):
         '''Get all of the task lists
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        lists_url = self.api_url + "/me/lists"
-        lists_request = requests.get(lists_url, headers=self.header,
-                                     timeout=self.timeout)
-
-        if lists_request.status_code == 200:
-            return lists_request.json()
-        else:
-            raise Exception("Get lists error", lists_request.status_code)
+        return Request("GET", "/me/lists", body=None)
 
     def add_list(self, list_name):
         '''Create a new task list.
         
         :param list_name: The name of the new list.
         :type list_name: str
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        lists_url = self.api_url + "/me/lists"
         body = {"title": list_name}
-        list_request = requests.post(lists_url, data=body,
-                                     headers=self.header,
-                                     timeout=self.timeout)
-
-        if list_request.status_code == 201:
-            return list_request.json()
-        else:
-            raise Exception("Add list error", list_request.status_code)
+        return Request("POST", "/me/lists", body)
 
     def delete_list(self, list_id):
         '''Delete a list and all of its contents.
@@ -228,34 +199,19 @@ class API(object):
         :param list_id: The id of the list to delete.
         :type list_id: str
         :returns: dict
-        :raises: Exception
         '''
 
-        list_url = self.api_url + "/" + list_id
-        list_request = requests.delete(list_url, headers=self.header,
-                                       timeout=self.timeout)
+        list_path "/{}".format(list_id)
+        return Request("DELETE", list_path, body=None)
 
-        if list_request.status_code == 200:
-            return True
-        else:
-            raise Exception("Delete list error", list_request.status_code)
-
+    @property
     def get_reminders(self):
         '''Get a list of all reminders.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        reminders_url = self.api_url + "/me/reminders"
-        reminders_request = requests.get(reminders_url, headers=self.header,
-                                         timeout=self.timeout)
-
-        if reminders_request.status_code == 200:
-            return reminders_request.json()
-        else:
-            raise Exception("Get reminders error",
-                            reminders_request.status_code)
+        return Request("GET", "/me/reminders", body=None)
 
     def set_reminder_for_task(self, task_id, date):
         '''Add a reminder for a task.
@@ -264,95 +220,70 @@ class API(object):
         :type task_id: str
         :param date: The reminder date/time in ISO format.
         :type date: str
+        :returns: Request
         '''
 
-        reminders_url = self.api_url + "/me/reminders"
         body = {"task_id": task_id, "date": date}  # date is in ISO date format
-        reminders_request = requests.post(reminders_url, headers=self.header,
-                                         data=body, timeout=self.timeout)
+        return Request("POST", "/me/reminders", body)
 
-        if reminders_request.status_code == 200:
-            return reminders_request.json()
-        else:
-            raise Exception("Set reminder error",
-                            reminders_request.status_code)
-
+    @property
     def get_shares(self):
         '''Get a list of all things shared with you, I think...
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        shares_url = self.api_url + "/me/shares"
-        shares_request = requests.get(shares_url, headers=self.header,
-                                      timeout=self.timeout)
+        return Request("GET", "/me/shares", body=None)
 
-        if shares_request.status_code == 200:
-            return shares_request.json()
-        else:
-            raise Exception("Get shares error", shares_request.status_code)
-
+    @property
     def get_services(self):
         '''Not sure.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        services_url = self.api_url + "/me/services"
-        services_request = requests.get(services_url, headers=self.header,
-                                        timeout=self.timeout)
+        return Request("GET", "/me/services", body=None)
 
-        if services_request.status_code == 200:
-            return services_request.json()
-        else:
-            raise Exception("Get services error", services_request.status_code)
-
+    @property
     def get_events(self):
         '''Not sure.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
         events_url = self.api_url + "/me/events"
-        events_request = requests.get(events_url, headers=self.header,
-                                      timeout=self.timeout)
+        return Request("GET", "/me/events", body=None)
 
-        if events_request.status_code == 200:
-            return events_request.json()
-        else:
-            raise Exception("Get events error", events_request.status_code)
-
+    @property
     def get_settings(self):
         '''Get account settings.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        settings_url = self.api_url + "/me/settings"
-        settings_request = requests.get(settings_url, headers=self.header,
-                                        timeout=self.timeout)
+        return Request("GET", "/me/settings", body=None)
 
-        if settings_request.status_code == 200:
-            return settings_request.json()
-        else:
-            raise Exception("Get settings error", settings_request.status_code)
-
+    @property
     def get_friends(self):
         '''Get friends list.
         
-        :returns: dict
-        :raises: Exception
+        :returns: Request
         '''
 
-        friends_url = self.api_url + "/me/friends"
-        friends_request = requests.get(friends_url, headers=self.header,
-                                       timeout=self.timeout)
+        return Request("GET", "/me/friends", body=None)
 
-        if friends_request.status_code == 200:
-            return friends_request.json()
-        else:
-            raise Exception("Get friends error", friends_request.status_code)
+
+class Request(object):
+    '''Object representing a single request.'''
+    def __init__(self, method, path, body):
+        '''
+        :param method: HTTP method to use.
+        :type method: str
+        :param path: URL path for the API call.
+        :type path: str
+        :param body: The HTTP request's data/body.
+        :type body: dict
+        '''
+        self.method = method
+        self.path = path
+        self.body = body
