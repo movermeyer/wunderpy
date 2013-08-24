@@ -15,3 +15,18 @@ To generate the documentation:
     cd docs
     make html # other options are available
     # look in the docs/build/html dir for the documentation
+
+Running Tests
+-------------
+
+I'm working on writing tests for everything.
+
+If you want to run said tests, make sure you have nose and nose-testconfig installed. Next, setup an ini config somewhere (I use the project root) that looks something like this:
+
+    [login]
+    email = test@email.web
+    password = password
+
+Now you can run the tests from the project root like this:
+
+    nosetests --tc-file test_config.ini
