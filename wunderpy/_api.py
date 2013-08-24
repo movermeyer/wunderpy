@@ -46,9 +46,9 @@ class API(object):
         '''
     
         request_body = {"email": email, "password": password}
-        self._send_request(Request("POST", "/login", request_body))
-        user_info = self._send_request("POST", "/login", request_body)
+        user_info = self.send_request(Request("POST", "/login", request_body))
         self.header["Authorization"] = "Bearer " + user_info["token"]
+        return user_info
 
     def queue_requests(self, *api_requests):
         '''Queues requests for later, when they will be sent as a batch.        
@@ -99,9 +99,9 @@ class API(object):
                 return requests.delete
         
         request_url = "{}{}".format(self.api_url, request.path)
-        request = function_for_request_method(request.method)
-        r = request(request_url, data=request.body_json,
-                    headers=self.header, timeout=self.timeout)
+        __send_request = function_for_request_method(request.method)
+        r = __send_request(request_url, data=request.body_json,
+                           headers=self.header, timeout=self.timeout)
         if r.status_code < 300:
             return r.json()
         else:
