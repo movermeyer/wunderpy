@@ -32,7 +32,10 @@ class TestAPIRequests(unittest.TestCase):
 		lists = Request.get_lists()
 		inbox = Request("GET", "/inbox/tasks", body=None)
 
-		batch_results = self.api.send_requests(me, settings, lists, inbox)
+		try:
+			batch_results = self.api.send_requests(me, settings, lists, inbox)
+		except:
+			self.fail("Batch request failure")
 		me_result = next(batch_results)
 		settings_result = next(batch_results)
 		lists_result = next(batch_results)
@@ -45,6 +48,6 @@ class TestAPIRequests(unittest.TestCase):
 		# check that each list has a title, since that's kinda important data
 		for list in lists_result:
 			self.assertIn("title", list)
-		# check taht each task in the inbox list has a title
+		# check that each task in the inbox list has a title
 		for task in inbox_result:
 			self.assertIn("title", task)
