@@ -5,13 +5,14 @@
 import requests
 import json
 
+
 class API(object):
     '''Ultimately handles all calls to Wunderlist.
         
     This class simply provides facilities for sending requests using the batch
     api or regular "real-time" requests. See the Request class and its
     class methods for objects encapsulating certain API calls, those objects
-    can then be passed to queue_requests or send_request.
+    can then be passed to send_request or send_requests.
     
     .. note::
         All requests (except for login) require an authentication header
@@ -49,36 +50,6 @@ class API(object):
         user_info = self.send_request(Request("POST", "/login", request_body))
         self.header["Authorization"] = "Bearer " + user_info["token"]
         return user_info
-
-    def queue_requests(self, *api_requests):
-        '''Queues requests for later, when they will be sent as a batch.        
-
-        Returns a generator which will yield the server response for each
-        request in the order they were supplied.
-        
-        :param api_requests: Valid Request objects.
-        :type requests: Request
-        :yields: dict
-        '''
-
-        ops = []
-        for request in api_requests:
-            operation = request.batch_format()
-            ops.append(operation)
-
-        request_body = {"ops": ops, "sequential": True}
-        request_body = json.dumps(request_body)
-        batch_url = "{}/batch".format(self.api_url)
-        r = requests.post(batch_url, data=request_body,
-                          headers=self.header, timeout=self.timeout)
-        # batch status code is always 200, so we don't really need to check
-        responses = r.json()
-        for response in responses["results"]:
-            # but we should check the status code for each request
-            if response["status"] < 300:  # since 2xx is usually alright
-                yield response["body"]
-            else:
-                raise Exception(response["status"])
         
     def send_request(self, request):
         '''Send a single request to Wunderlist in real time.
@@ -106,7 +77,29 @@ class API(object):
             return r.json()
         else:
             raise Exception(r.status_code)
- 
+
+
+    def send_requests(self, *api_requests):
+        '''Sends requests as a batch.        
+    
+        Returns a generator which will yield the server response for each
+        request in the order they were supplied.
+        
+        :param api_requests: Valid Request objects.
+        :type requests: Request
+        :yields: dict
+        '''
+    
+        ops = [req.batch_format() for req in api_requests]
+    
+        request_body = {"ops": ops, "sequential": True}
+        batch_request = Request("POST", "/batch", request_body)
+        responses = self.send_request(batch_request)
+        for response in responses["results"]:
+            if response["status"] < 300:  # /batch is always 200
+                yield response["body"]
+            else:
+                raise Exception(response["status"]) 
 
 class Request(object):
     '''Object representing a single request.'''
@@ -301,7 +294,6 @@ class Request(object):
         :returns: Request
         '''
     
-        events_url = self.api_url + "/me/events"
         return Request("GET", "/me/events", body=None)
     
     @classmethod

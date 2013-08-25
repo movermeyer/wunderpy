@@ -26,12 +26,13 @@ class TestAPIRequests(unittest.TestCase):
 		cls.user_info = cls.api.login(email, password)
 
 	def test_batch(self):
+		'''Test a simple request using /batch'''
 		me = Request.me()
 		settings = Request.get_settings()
 		lists = Request.get_lists()
 		inbox = Request("GET", "/inbox/tasks", body=None)
 
-		batch_results = self.api.queue_requests(me, settings, lists, inbox)
+		batch_results = self.api.send_requests(me, settings, lists, inbox)
 		me_result = next(batch_results)
 		settings_result = next(batch_results)
 		lists_result = next(batch_results)
