@@ -48,7 +48,7 @@ class Wunderlist(object):
         inbox["updated_on"] = ""
         inbox["tasks"] = [t for t in tasks if t["list_id"] == "inbox"]
         self.lists.append(inbox)
-        
+
         # get the remaining lists and put the tasks into their list
         for list in self._api.send_request(Request.get_lists()):
             list["tasks"] = [t for t in tasks if t["list_id"] == list["id"]]
@@ -57,7 +57,7 @@ class Wunderlist(object):
     def add_task(self, title, list_title="inbox", note=None,
                  due_date=None, starred=False):
         '''Create a new task.
-        
+
         :param title: The task's name.
         :type title: str
         :param list_title: The title of the list that the task will go in.
