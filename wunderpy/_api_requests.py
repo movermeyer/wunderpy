@@ -30,6 +30,16 @@ class Request(object):
         return op
 
     @classmethod
+    def login(self, email, password):
+        '''Login request, so we can get a token.
+
+        :returns: Request
+        '''
+
+        return Request("POST", "/login",
+                       body={"email": email, "password": password})
+
+    @classmethod
     def me(self):
         '''Request for /me, which returns user information.
 

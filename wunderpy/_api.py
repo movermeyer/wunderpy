@@ -47,8 +47,7 @@ class API(object):
         :returns: dict -- Containing user information.
         '''
 
-        request_body = {"email": email, "password": password}
-        user_info = self.send_request(Request("POST", "/login", request_body))
+        user_info = self.send_request(Request.login(email, password))
         self.header["Authorization"] = "Bearer " + user_info["token"]
         return user_info
 
