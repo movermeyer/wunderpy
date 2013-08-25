@@ -120,6 +120,9 @@ class Request(object):
             self.body = body
         self.body_json = json.dumps(body)
 
+    def __repr__(self):
+        return "<wunderpy Request: {} {}>".format(self.method, self.path)
+
     def batch_format(self):
         op = {"method": self.method, "url": self.path, \
               "params": self.body}
