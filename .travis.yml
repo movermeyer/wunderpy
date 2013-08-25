@@ -4,7 +4,6 @@ python:
 install:
     - pip install -r requirements.txt
 env:
-  matrix:
   - secure: ZZ2hIW6D36WKyPOhLAkCcA7lqa8lV8ty8aHrJSONa83DMEbp0NasBqBpPSX0Awp3DPniNnGCn3kPIZXwx/sJuSMCKitmAu4HtYynTK2yhv+A/JJsmnBLMm1OlBZWJ6FJ9LszuZIvXSCA1MLk7QvY5olqqFp1UYEh7ep9CueL9dY=
   - secure: bMh9I7FhrQOBm5w7VwuyvyB1s2SyelIy/xHM1q1gnH5PZbua0t7DzFlhVwbXY8rXoNIiPGzJlnZ6VeAA3atObJNbkxGQmQ41ZVReT1I8M9VPHQaz/dkBW9mO+QIBchgONuciT87uAa3SmP5gxPSAP5EGNpKT7p2K6iIgzIOYB68=
 script: nosetests
