@@ -1,4 +1,6 @@
 import unittest
+import os
+
 from testconfig import config
 from wunderpy import Wunderlist
 from wunderpy._api import API
@@ -8,8 +10,13 @@ from wunderpy._api_requests import Request
 class TestAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        email = config["login"]["email"]
-        password = config["login"]["password"]
+        try:
+            email = config["login"]["email"]
+            password = config["login"]["password"]
+        except:  # no config, so travis is running
+            email = os.environ.get("WUNDERPY_EMAIL")
+            password = os.environ.get("WUNDERPY_PASSWORD")
+
         cls.wunderlist = Wunderlist(email, password)
         cls.api = API()
         # we aren't testing anything from the wunderlist class aside from login
