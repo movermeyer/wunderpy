@@ -68,7 +68,7 @@ class API(object):
 
         request_body = {"ops": ops, "sequential": True}
         request_body = json.dumps(request_body)
-        batch_url = "{}/batch".format(self.url)
+        batch_url = "{}/batch".format(self.api_url)
         r = requests.post(batch_url, data=request_body,
                           headers=self.header, timeout=self.timeout)
         # batch status code is always 200, so we don't really need to check
@@ -129,7 +129,7 @@ class Request(object):
 
     def batch_format(self):
         op = {"method": self.method, "url": self.path, \
-              "params": self.body_dict}
+              "params": self.body}
         return op
 
     @classmethod
