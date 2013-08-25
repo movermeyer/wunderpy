@@ -5,12 +5,25 @@ from wunderpy._api import API
 from wunderpy._api_requests import Request
 
 
-class TestAuth(unittest.TestCase):
+class TestAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         email = config["login"]["email"]
         password = config["login"]["password"]
         cls.wunderlist = Wunderlist(email, password)
+        cls.api = API()
+        # we aren't testing anything from the wunderlist class aside from login
+        # so just login with the api class
+        cls.user_info = cls.api.login(email, password)
+
+
+class TestAPIRequests(TestAPI):
+    def setUp(self):
+        '''Create some data for use in testing'''
+        pass
+
+    def tearDown(self):
+        pass
 
     def test_login(self):
         try:
@@ -18,21 +31,12 @@ class TestAuth(unittest.TestCase):
         except:
             self.fail("Login failure")
 
-
-class TestAPIRequests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        email = config["login"]["email"]
-        password = config["login"]["password"]
-        cls.api = API()
-        cls.user_info = cls.api.login(email, password)
-
     def test_batch(self):
         '''Test a simple request using /batch'''
         me = Request.me()
 
         try:
-            batch_results = self.api.send_requests(me)
+            batch_results = self.api.send_requests([me])
         except:
             self.fail("Batch request failure")
         me_result = next(batch_results)
@@ -53,8 +57,8 @@ class TestAPIRequests(unittest.TestCase):
         friends = Request.get_friends()
 
         try:
-            results = self.api.send_requests(me, shares, services, events,
-                                             settings, friends)
+            results = self.api.send_requests([me, shares, services, events,
+                                             settings, friends])
         except:
             self.fail("Batch request failure")
 

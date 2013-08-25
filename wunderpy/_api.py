@@ -78,13 +78,14 @@ class API(object):
         else:
             raise Exception(r.status_code)
 
-    def send_requests(self, *api_requests):
+    def send_requests(self, api_requests):
         '''Sends requests as a batch.
 
         Returns a generator which will yield the server response for each
         request in the order they were supplied.
 
-        :param api_requests: Valid Request objects.
+        :param api_requests: a list of Valid Request objects.
+        :type api_requests: list
         :type requests: Request
         :yields: dict
         '''
