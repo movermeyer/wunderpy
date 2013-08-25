@@ -3,12 +3,12 @@ from testconfig import config
 from wunderpy import Wunderlist
 
 
-class TestAPI(unittest.TestCase):
-	def setUp(self):
+class TestAuth(unittest.TestCase):
+	@classmethod
+	def setUpClass(cls):
 		email = config["login"]["email"]
 		password = config["login"]["password"]
-		self.wunderlist = Wunderlist(email, password)
-		self._api = self.wunderlist._api
+		cls.wunderlist = Wunderlist(email, password)
 
 	def test_login(self):
 		try:
