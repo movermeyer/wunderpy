@@ -1,7 +1,8 @@
 import unittest
 from testconfig import config
 from wunderpy import Wunderlist
-from wunderpy._api import API, Request
+from wunderpy._api import API
+from wunderpy._api_requests import Request
 
 
 class TestAuth(unittest.TestCase):
