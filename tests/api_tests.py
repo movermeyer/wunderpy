@@ -28,26 +28,46 @@ class TestAPIRequests(unittest.TestCase):
 	def test_batch(self):
 		'''Test a simple request using /batch'''
 		me = Request.me()
-		settings = Request.get_settings()
-		lists = Request.get_lists()
-		inbox = Request("GET", "/inbox/tasks", body=None)
 
 		try:
-			batch_results = self.api.send_requests(me, settings, lists, inbox)
+			batch_results = self.api.send_requests(me)
 		except:
 			self.fail("Batch request failure")
 		me_result = next(batch_results)
-		settings_result = next(batch_results)
-		lists_result = next(batch_results)
-		inbox_result = next(batch_results)		
 
 		# if we get a correct id value, everything probably worked on our end
 		self.assertEqual(self.user_info["id"], me_result["id"])
-		# just checking for an arbitrary key in the settings output
+
+	def test_me(self):
+		'''Test some of the more trivial /me/* requests.'''
+		# we're testing them in a batch because it's faster
+		# and send_request is already tested in test_login
+
+		me = Request.me()
+		shares = Request.get_shares()
+		services = Request.get_services()
+		events = Request.get_events()
+		settings = Request.get_settings()
+		friends = Request.get_friends()
+
+		try:
+			results = self.api.send_requests(me, shares, services, events,
+											settings, friends)
+		except:
+			self.fail("Batch request failure")
+
+		me_result = next(results)
+		shares_result = next(results)
+		services_result = next(results)
+		events_result = next(results)
+		settings_result = next(results)
+		friends_result = next(results)
+
+		# more stupid assertions, just to make sure we have some valid result
+		self.assertEqual(self.user_info["id"], me_result["id"])
 		self.assertIn("background", settings_result)
-		# check that each list has a title, since that's kinda important data
-		for list in lists_result:
-			self.assertIn("title", list)
-		# check that each task in the inbox list has a title
-		for task in inbox_result:
-			self.assertIn("title", task)
+		# not sure what's going on with services and events, so i won't check
+		self.assertIn("background", settings_result)
+		self.assertEqual(type(friends_result), list)  # can't do much more		
+		
+		
