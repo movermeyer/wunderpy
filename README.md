@@ -7,6 +7,11 @@ The goal of this project is to make [Wunderlist's](https://wunderlist.com) priva
 
 You can read the documentation at [readthedocs.](https://wunderpy.readthedocs.org/en/latest/)
 
+Disclaimer
+----------
+
+In no way is this project near complete or perfect. There are a lot of things that can be done better, especially design-wise, that I'm trying to fix as I learn more.
+
 Building the Docs
 -----------------
 
