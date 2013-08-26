@@ -109,3 +109,22 @@ class TestAPIRequests(TestAPI):
 
         self.assertEqual(note_result["note"], "note")
         # test reminder date here
+
+        # test getting tasks
+        get_tasks = Request.get_all_tasks()
+        try:
+            result = self.api.send_request(get_tasks)
+        except:
+            self.fail()        
+
+        if len(result) < 1:
+            self.fail("Received no tasks")
+        if not any(l["title"] == "test" for l in result):
+            self.fail("No test task found")
+
+        # delete everything
+        delete = Request.delete_task(new_task_id)
+        try:
+            self.api.send_request(delete)
+        except:
+            self.fail()
