@@ -25,13 +25,6 @@ class TestAPI(unittest.TestCase):
 
 
 class TestAPIRequests(TestAPI):
-    def setUp(self):
-        '''Create some data for use in testing'''
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_login(self):
         try:
             self.wunderlist.login()
@@ -82,3 +75,37 @@ class TestAPIRequests(TestAPI):
         # not sure what's going on with services and events, so i won't check
         self.assertIn("background", settings_result)
         self.assertEqual(type(friends_result), list)  # can't do much more
+
+    def test_tasks(self):
+        '''Test all task related functionality'''
+        import datetime
+        
+        due = datetime.date(2012, 12, 21).isoformat()
+        add_task = Request.add_task("test", "inbox", due_date=due,
+                                      starred=True)
+
+        # sending a request now, because we need the list's id
+        try:
+            result = self.api.send_request(add_task)
+        except:
+            self.fail()
+        new_task_id = result["id"]
+
+        self.assertEqual(result["due_date"], due)
+        self.assertEqual(result["title"], "test")
+        self.assertEqual(result["starred"], True)
+
+        # test adding a note and a reminder date
+        add_note = Request.set_note_for_task("note", new_task_id)
+        reminder = datetime.date(2012, 12, 22).isoformat()
+        add_reminder = Request.set_reminder_for_task(new_task_id, reminder)
+        try:
+            results = self.api.send_requests([add_note, add_reminder])
+        except:
+            self.fail()
+
+        note_result = next(results)
+        reminder_result = next(results)
+
+        self.assertEqual(note_result["note"], "note")
+        # test reminder date here
