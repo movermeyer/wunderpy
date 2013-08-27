@@ -79,10 +79,10 @@ class TestAPIRequests(TestAPI):
     def test_tasks(self):
         '''Test all task related functionality'''
         import datetime
-        
+
         due = datetime.date(2012, 12, 21).isoformat()
         add_task = Request.add_task("test", "inbox", due_date=due,
-                                      starred=True)
+                                    starred=True)
 
         # sending a request now, because we need the list's id
         try:
@@ -115,16 +115,57 @@ class TestAPIRequests(TestAPI):
         try:
             result = self.api.send_request(get_tasks)
         except:
-            self.fail()        
+            self.fail()
 
         if len(result) < 1:
             self.fail("Received no tasks")
-        if not any(l["title"] == "test" for l in result):
+        if not any(t["title"] == "test" for t in result):
             self.fail("No test task found")
 
         # delete everything
         delete = Request.delete_task(new_task_id)
         try:
             self.api.send_request(delete)
+        except:
+            self.fail()
+
+    def test_lists(self):
+        '''Test list related stuff'''
+
+        add_list = Request.add_list("test list")
+        try:
+            result = self.api.send_request(add_list)
+        except:
+            self.fail()
+
+        list_id = result["id"]
+        add_task = Request.add_task("test", list_id)
+        try:
+            result = self.api.send_request(add_task)
+        except:
+            self.fail()
+
+        # check that the list exists and has a task in it
+        get_lists = Request.get_lists()
+        get_tasks = Request.get_all_tasks()
+        try:
+            results = self.api.send_requests([get_lists, get_tasks])
+        except:
+            self.fail()
+
+        lists = next(results)
+        tasks = next(results)
+
+        if not any(l["title"] == "test list" for l in lists):
+            self.fail()
+
+        if not any(t["list_id"] == list_id for t in tasks):
+            self.fail()
+
+        task_id = result["id"]
+        delete_task = Request.delete_task(task_id)
+        delete_list = Request.delete_list(list_id)
+        try:
+            self.api.send_requests([delete_task, delete_list])
         except:
             self.fail()
