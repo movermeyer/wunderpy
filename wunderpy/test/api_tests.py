@@ -166,6 +166,8 @@ class TestAPIRequests(TestAPI):
         delete_task = Request.delete_task(task_id)
         delete_list = Request.delete_list(list_id)
         try:
-            self.api.send_requests([delete_task, delete_list])
+            results = self.api.send_requests([delete_task, delete_list])
+            next(results)
+            next(results)
         except:
             self.fail()
