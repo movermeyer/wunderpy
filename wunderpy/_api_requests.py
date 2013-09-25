@@ -154,11 +154,25 @@ class Request(object):
 
         :param list_id: The id of the list to delete.
         :type list_id: str
-        :returns: dict
+        :returns: Request
         '''
 
         list_path = "/{}".format(list_id)
         return Request("DELETE", list_path, body=None)
+
+    @classmethod
+    def add_comment(self, title, task_id):
+        '''Add a comment to a task. I'm not sure if this works with batch
+        
+        :param title: The comment name/title.
+        :param task_id: The ID of the task you're commenting on.
+        :type title: str
+        :type task_id: str
+        :returns: Request
+        '''
+        body = {"channel_id": task_id, "channel_type": "tasks",
+                "text": title}
+        return Request("POST", "", body=body)
 
     @classmethod
     def get_reminders(self):
