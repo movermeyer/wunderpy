@@ -1,5 +1,5 @@
 import json
-from time import strftime, gmtime
+import datetime
 
 
 class Request(object):
@@ -87,6 +87,23 @@ class Request(object):
             body["due_date"] = due_date  # should be in ISO format
 
         return Request("POST", "/me/tasks", body)
+
+    @classmethod
+    def complete_task(self, task_id, completed_at=None):
+        '''Mark a task as completed.
+            
+        :param task_id: The ID of the task you are completing.
+        :type task_id: str
+        :param completed_at: The datetime it was completed at, in ISO format.
+        :type completed_at: str
+        '''
+
+        if not completed_at:
+            completed_at = datetime.datetime.now().isoformat()
+
+        path = "/{}".format(task_id)
+        body = {"completed_at": completed_at, "position": 0}
+        return Request("PUT", path, body=body)
 
     @classmethod
     def set_note_for_task(self, note, task_id):

@@ -99,15 +99,20 @@ class TestAPIRequests(TestAPI):
         add_note = Request.set_note_for_task("note", new_task_id)
         reminder = datetime.date(2012, 12, 22).isoformat()
         add_reminder = Request.set_reminder_for_task(new_task_id, reminder)
+        complete_task = Request.complete_task(new_task_id)
         try:
-            results = self.api.send_requests([add_note, add_reminder])
+            results = self.api.send_requests([add_note, add_reminder,
+                                              complete_task])
         except:
             self.fail()
 
         note_result = next(results)
         reminder_result = next(results)
+        complete_result = next(results)
 
         self.assertEqual(note_result["note"], "note")
+        self.assertIsNotNone(complete_result["completed_at"])
+        self.assertIsNotNone(complete_result["completed_by_id"])
         # test reminder date here
 
         # test getting tasks
