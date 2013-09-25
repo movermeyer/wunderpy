@@ -1,9 +1,11 @@
 import json
+from time import strftime, gmtime
 
 
 class Request(object):
     '''Object representing a single request.'''
-    def __init__(self, method, path, body):
+    def __init__(self, method, path, body,
+                 api_server="https://api.wunderlist.com"):
         '''
         :param method: HTTP method to use.
         :type method: str
@@ -11,8 +13,11 @@ class Request(object):
         :type path: str
         :param body: The HTTP request's data/body.
         :type body: dict
+        :param api_server: The server the request will be sent to.
+        "type api_server: str
         '''
 
+        self.api_server = api_server
         self.method = method
         self.path = path
         if not body:
@@ -170,9 +175,13 @@ class Request(object):
         :type task_id: str
         :returns: Request
         '''
+
+        url = "https://comments.wunderlist.com"
+        current_time = strftime("%Y-%m-%dT%H:%M:%S+0000", gmtime())
         body = {"channel_id": task_id, "channel_type": "tasks",
                 "text": title}
-        return Request("POST", "", body=body)
+        path = "/tasks/{}/messages".format(task_id)
+        return Request("POST", path, body=body, api_server=url)
 
     @classmethod
     def get_reminders(self):
