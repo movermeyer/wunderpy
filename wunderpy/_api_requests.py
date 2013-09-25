@@ -166,6 +166,18 @@ class Request(object):
         return Request("DELETE", list_path, body=None)
 
     @classmethod
+    def get_comments(self, task_id):
+        '''Get all comments from the specified task.
+        
+        :param task_id: The ID of the task.
+        :type task_id: str
+        '''
+
+        url = "https://comments.wunderlist.com"
+        path = "/tasks/{}/messages".format(task_id)
+        return Request("GET", path, body=None, api_server=url)
+
+    @classmethod
     def add_comment(self, title, task_id):
         '''Add a comment to a task. I'm not sure if this works with batch
         
@@ -177,7 +189,6 @@ class Request(object):
         '''
 
         url = "https://comments.wunderlist.com"
-        current_time = strftime("%Y-%m-%dT%H:%M:%S+0000", gmtime())
         body = {"channel_id": task_id, "channel_type": "tasks",
                 "text": title}
         path = "/tasks/{}/messages".format(task_id)
