@@ -20,20 +20,14 @@ class API(object):
         using a token received from the login request.
         The values to go into the header are
         {"Authorization": "Bearer " + token}.
-
-    .. |url| replace:: API_URL
     '''
 
-    def __init__(self, url="https://api.wunderlist.com",
-                 request_timeout=30):
+    def __init__(self, request_timeout=30):
         '''
-        :param url: URL of the API that will be used.
-        :type url: str
         :param request_timeout: Timeout value (seconds) for all requests.
         :type request_timeout: int
         '''
 
-        self.api_url = url
         self.timeout = request_timeout
         self.header = {"Content-Type": "application/json"}
 
@@ -69,7 +63,7 @@ class API(object):
             elif method == "DELETE":
                 return requests.delete
 
-        request_url = "{}{}".format(self.api_url, request.path)
+        request_url = "{}{}".format(request.api_server, request.path)
         __send_request = function_for_request_method(request.method)
         r = __send_request(request_url, data=request.body_json,
                            headers=self.header, timeout=self.timeout)

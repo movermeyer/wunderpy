@@ -1,9 +1,11 @@
 import json
+from time import strftime, gmtime
 
 
 class Request(object):
     '''Object representing a single request.'''
-    def __init__(self, method, path, body):
+    def __init__(self, method, path, body,
+                 api_server="https://api.wunderlist.com"):
         '''
         :param method: HTTP method to use.
         :type method: str
@@ -11,8 +13,11 @@ class Request(object):
         :type path: str
         :param body: The HTTP request's data/body.
         :type body: dict
+        :param api_server: The server the request will be sent to.
+        "type api_server: str
         '''
 
+        self.api_server = api_server
         self.method = method
         self.path = path
         if not body:
@@ -154,11 +159,40 @@ class Request(object):
 
         :param list_id: The id of the list to delete.
         :type list_id: str
-        :returns: dict
+        :returns: Request
         '''
 
         list_path = "/{}".format(list_id)
         return Request("DELETE", list_path, body=None)
+
+    @classmethod
+    def get_comments(self, task_id):
+        '''Get all comments from the specified task.
+        
+        :param task_id: The ID of the task.
+        :type task_id: str
+        '''
+
+        url = "https://comments.wunderlist.com"
+        path = "/tasks/{}/messages".format(task_id)
+        return Request("GET", path, body=None, api_server=url)
+
+    @classmethod
+    def add_comment(self, title, task_id):
+        '''Add a comment to a task. I'm not sure if this works with batch
+        
+        :param title: The comment name/title.
+        :param task_id: The ID of the task you're commenting on.
+        :type title: str
+        :type task_id: str
+        :returns: Request
+        '''
+
+        url = "https://comments.wunderlist.com"
+        body = {"channel_id": task_id, "channel_type": "tasks",
+                "text": title}
+        path = "/tasks/{}/messages".format(task_id)
+        return Request("POST", path, body=body, api_server=url)
 
     @classmethod
     def get_reminders(self):
