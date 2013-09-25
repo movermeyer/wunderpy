@@ -3,8 +3,8 @@ import os
 
 from testconfig import config
 from wunderpy import Wunderlist
-from wunderpy._api import API
-from wunderpy._api_requests import Request
+from wunderpy.api import API
+from wunderpy.api import Request
 
 
 class TestAPI(unittest.TestCase):

@@ -2,7 +2,7 @@
 .. module:: wunderlist
 '''
 
-from ._api import API, Request
+from .api import API, Request
 
 
 class Wunderlist(object):

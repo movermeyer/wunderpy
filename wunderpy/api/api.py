@@ -2,8 +2,7 @@
 .. module:: _api
 '''
 
-from ._api_requests import Request
-
+from .request import Request
 import requests
 
 
