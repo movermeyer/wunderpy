@@ -1,5 +1,5 @@
 '''
-.. module:: _api
+.. module:: api
 '''
 
 from .request import Request
