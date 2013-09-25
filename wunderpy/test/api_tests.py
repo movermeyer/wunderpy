@@ -171,3 +171,17 @@ class TestAPIRequests(TestAPI):
             next(results)
         except:
             self.fail()
+
+    def test_comments(self):
+        # add a task
+        add_task = Request.add_task("comment test", "inbox")
+        task_result = self.api.send_request(add_task)
+        task_id = task_result["id"]
+        # add a comment to the task
+        add_comment = Request.add_comment("test", task_id)
+        comment_result = self.api.send_request(add_comment)
+        task_comments = self.api.send_request(Request.get_comments(task_id))
+        # see if there's a comment with the title we gave
+        self.assertEqual("test", task_comments[0]["text"])
+        # cleanup
+        delete = self.api.send_request(Request.delete_task(task_id))
