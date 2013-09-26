@@ -118,7 +118,7 @@ def set_task_due_date(task_id, due_date, recurrence_count=1):
     return Request("PUT", url, data=body)
 
 
-def delete_task(task_id):
+def delete_task(task_id, deleted_at=None):
     '''Delete a task.
 
     :param task_id: The task's id.
@@ -126,8 +126,12 @@ def delete_task(task_id):
     :returns: Request
     '''
 
+    if not deleted_at:
+        deleted_at = datetime.datetime.now().isoformat()
+
     url = "{}/{}".format(API_URL, task_id)
-    return Request("DELETE", url)
+    body = {"deleted_at": deleted_at}
+    return Request("DELETE", url, data=body)
 
 
 def get_lists():
