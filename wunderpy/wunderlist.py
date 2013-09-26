@@ -13,7 +13,7 @@ class Wunderlist(api.APIClient):
         api.APIClient.__init__(self)
         self.lists = {}
 
-    def init_lists(self):
+    def update_lists(self):
         '''Populate the lists with all tasks.'''
 
         request = self.send_requests([api.calls.get_all_tasks(),
@@ -55,6 +55,7 @@ class Wunderlist(api.APIClient):
         add_task = api.calls.add_task(title, list_id, due_date=due_date,
                                       starred=starred)
         result = self.send_request(add_task)
+        self.lists.get(list)["tasks"].append(result)
 
         if note:
             self.send_request(api.calls.set_note_for_task(note, result["id"]))
