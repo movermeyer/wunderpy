@@ -3,61 +3,58 @@ import os
 
 from testconfig import config
 from wunderpy import Wunderlist
-from wunderpy.api import API
-from wunderpy.api import Request
+from wunderpy import api
+
+
+try:
+    EMAIL = config["login"]["email"]
+    PASSWORD = config["login"]["password"]
+except:  # no config, so travis is running
+    EMAIL = os.environ.get("WUNDERPY_EMAIL")
+    PASSWORD = os.environ.get("WUNDERPY_PASSWORD")
 
 
 class TestAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        try:
-            email = config["login"]["email"]
-            password = config["login"]["password"]
-        except:  # no config, so travis is running
-            email = os.environ.get("WUNDERPY_EMAIL")
-            password = os.environ.get("WUNDERPY_PASSWORD")
-
-        cls.wunderlist = Wunderlist(email, password)
-        cls.api = API()
-        # we aren't testing anything from the wunderlist class aside from login
-        # so just login with the api class
-        cls.user_info = cls.api.login(email, password)
+        cls.wunderlist = Wunderlist()
+        cls.wunderlist.login(EMAIL, PASSWORD)
 
 
 class TestAPIRequests(TestAPI):
     def test_login(self):
         try:
-            self.wunderlist.login()
+            self.wunderlist.login(EMAIL, PASSWORD)
         except:
             self.fail("Login failure")
 
     def test_batch(self):
         '''Test a simple request using /batch'''
-        me = Request.me()
+        me = api.calls.me()
 
         try:
-            batch_results = self.api.send_requests([me])
+            batch_results = self.wunderlist.send_requests([me])
         except:
             self.fail("Batch request failure")
         me_result = next(batch_results)
 
         # if we get a correct id value, everything probably worked on our end
-        self.assertEqual(self.user_info["id"], me_result["id"])
+        self.assertEqual(self.wunderlist.id, me_result["id"])
 
     def test_me(self):
         '''Test some of the more trivial /me/* requests.'''
         # we're testing them in a batch because it's faster
         # and send_request is already tested in test_login
 
-        me = Request.me()
-        shares = Request.get_shares()
-        services = Request.get_services()
-        events = Request.get_events()
-        settings = Request.get_settings()
-        friends = Request.get_friends()
+        me = api.calls.me()
+        shares = api.calls.get_shares()
+        services = api.calls.get_services()
+        events = api.calls.get_events()
+        settings = api.calls.get_settings()
+        friends = api.calls.get_friends()
 
         try:
-            results = self.api.send_requests([me, shares, services, events,
+            results = self.wunderlist.send_requests([me, shares, services, events,
                                              settings, friends])
         except:
             self.fail("Batch request failure")
@@ -70,7 +67,7 @@ class TestAPIRequests(TestAPI):
         friends_result = next(results)
 
         # more stupid assertions, just to make sure we have some valid result
-        self.assertEqual(self.user_info["id"], me_result["id"])
+        self.assertEqual(self.wunderlist.id, me_result["id"])
         self.assertIn("background", settings_result)
         # not sure what's going on with services and events, so i won't check
         self.assertIn("background", settings_result)
@@ -81,12 +78,12 @@ class TestAPIRequests(TestAPI):
         import datetime
 
         due = datetime.date(2012, 12, 21).isoformat()
-        add_task = Request.add_task("test", "inbox", due_date=due,
+        add_task = api.calls.add_task("test", "inbox", due_date=due,
                                     starred=True)
 
         # sending a request now, because we need the list's id
         try:
-            result = self.api.send_request(add_task)
+            result = self.wunderlist.send_request(add_task)
         except:
             self.fail()
         new_task_id = result["id"]
@@ -96,12 +93,12 @@ class TestAPIRequests(TestAPI):
         self.assertEqual(result["starred"], True)
 
         # test adding a note and a reminder date
-        add_note = Request.set_note_for_task("note", new_task_id)
+        add_note = api.calls.set_note_for_task("note", new_task_id)
         reminder = datetime.date(2012, 12, 22).isoformat()
-        add_reminder = Request.set_reminder_for_task(new_task_id, reminder)
-        complete_task = Request.complete_task(new_task_id)
+        add_reminder = api.calls.set_reminder_for_task(new_task_id, reminder)
+        complete_task = api.calls.complete_task(new_task_id)
         try:
-            results = self.api.send_requests([add_note, add_reminder,
+            results = self.wunderlist.send_requests([add_note, add_reminder,
                                               complete_task])
         except:
             self.fail()
@@ -116,9 +113,9 @@ class TestAPIRequests(TestAPI):
         # test reminder date here
 
         # test getting tasks
-        get_tasks = Request.get_all_tasks()
+        get_tasks = api.calls.get_all_tasks()
         try:
-            result = self.api.send_request(get_tasks)
+            result = self.wunderlist.send_request(get_tasks)
         except:
             self.fail()
 
@@ -128,33 +125,33 @@ class TestAPIRequests(TestAPI):
             self.fail("No test task found")
 
         # delete everything
-        delete = Request.delete_task(new_task_id)
+        delete = api.calls.delete_task(new_task_id)
         try:
-            self.api.send_request(delete)
+            self.wunderlist.send_request(delete)
         except:
             self.fail()
 
     def test_lists(self):
         '''Test list related stuff'''
 
-        add_list = Request.add_list("test list")
+        add_list = api.calls.add_list("test list")
         try:
-            result = self.api.send_request(add_list)
+            result = self.wunderlist.send_request(add_list)
         except:
             self.fail()
 
         list_id = result["id"]
-        add_task = Request.add_task("test", list_id)
+        add_task = api.calls.add_task("test", list_id)
         try:
-            result = self.api.send_request(add_task)
+            result = self.wunderlist.send_request(add_task)
         except:
             self.fail()
 
         # check that the list exists and has a task in it
-        get_lists = Request.get_lists()
-        get_tasks = Request.get_all_tasks()
+        get_lists = api.calls.get_lists()
+        get_tasks = api.calls.get_all_tasks()
         try:
-            results = self.api.send_requests([get_lists, get_tasks])
+            results = self.wunderlist.send_requests([get_lists, get_tasks])
         except:
             self.fail()
 
@@ -168,10 +165,10 @@ class TestAPIRequests(TestAPI):
             self.fail()
 
         task_id = result["id"]
-        delete_task = Request.delete_task(task_id)
-        delete_list = Request.delete_list(list_id)
+        delete_task = api.calls.delete_task(task_id)
+        delete_list = api.calls.delete_list(list_id)
         try:
-            results = self.api.send_requests([delete_task, delete_list])
+            results = self.wunderlist.send_requests([delete_task, delete_list])
             next(results)
             next(results)
         except:
@@ -179,14 +176,14 @@ class TestAPIRequests(TestAPI):
 
     def test_comments(self):
         # add a task
-        add_task = Request.add_task("comment test", "inbox")
-        task_result = self.api.send_request(add_task)
+        add_task = api.calls.add_task("comment test", "inbox")
+        task_result = self.wunderlist.send_request(add_task)
         task_id = task_result["id"]
         # add a comment to the task
-        add_comment = Request.add_comment("test", task_id)
-        comment_result = self.api.send_request(add_comment)
-        task_comments = self.api.send_request(Request.get_comments(task_id))
+        add_comment = api.calls.add_comment("test", task_id)
+        comment_result = self.wunderlist.send_request(add_comment)
+        task_comments = self.wunderlist.send_request(api.calls.get_comments(task_id))
         # see if there's a comment with the title we gave
         self.assertEqual("test", task_comments[0]["text"])
         # cleanup
-        delete = self.api.send_request(Request.delete_task(task_id))
+        delete = self.wunderlist.send_request(api.calls.delete_task(task_id))
