@@ -1,5 +1,6 @@
 import unittest
 import os
+import datetime
 
 from testconfig import config
 from wunderpy import Wunderlist
@@ -21,7 +22,7 @@ class TestAPI(unittest.TestCase):
         cls.wunderlist.login(EMAIL, PASSWORD)
 
 
-class TestAPIRequests(TestAPI):
+class TestBasicRequests(TestAPI):
     def test_login(self):
         try:
             self.wunderlist.login(EMAIL, PASSWORD)
@@ -73,106 +74,60 @@ class TestAPIRequests(TestAPI):
         self.assertIn("background", settings_result)
         self.assertEqual(type(friends_result), list)  # can't do much more
 
-    def test_tasks(self):
-        '''Test all task related functionality'''
-        import datetime
 
+class TestTasks(TestAPI):
+    def test_get_tasks(self):
+        result = self.wunderlist.send_request(api.calls.add_task("test",
+                                                                 "inbox"))
+        task_id = result["id"]
+        tasks = self.wunderlist.send_request(api.calls.get_all_tasks())
+        self.assertFalse(len(result) < 1)  # make sure we have one task
+        self.wunderlist.send_request(api.calls.delete_task(task_id))
+
+    def test_add_task(self):
         due = datetime.date(2012, 12, 21).isoformat()
         add_task = api.calls.add_task("test", "inbox", due_date=due,
-                                    starred=True)
+                                      starred=True)
 
-        # sending a request now, because we need the list's id
-        try:
-            result = self.wunderlist.send_request(add_task)
-        except:
-            self.fail()
-        new_task_id = result["id"]
+        result = self.wunderlist.send_request(add_task)
+        task_id = result["id"]
 
         self.assertEqual(result["due_date"], due)
         self.assertEqual(result["title"], "test")
         self.assertEqual(result["starred"], True)
 
-        # test adding a note and a reminder date
-        add_note = api.calls.set_note_for_task("note", new_task_id)
-        reminder = datetime.date(2012, 12, 22).isoformat()
-        add_reminder = api.calls.set_reminder_for_task(new_task_id, reminder)
-        complete_task = api.calls.complete_task(new_task_id)
-        try:
-            results = self.wunderlist.send_requests([add_note, add_reminder,
-                                              complete_task])
-        except:
-            self.fail()
+        self.wunderlist.send_request(api.calls.delete_task(task_id))
 
-        note_result = next(results)
-        reminder_result = next(results)
-        complete_result = next(results)
-
-        self.assertEqual(note_result["note"], "note")
-        self.assertIsNotNone(complete_result["completed_at"])
-        self.assertIsNotNone(complete_result["completed_by_id"])
-        # test reminder date here
-
-        # test getting tasks
-        get_tasks = api.calls.get_all_tasks()
-        try:
-            result = self.wunderlist.send_request(get_tasks)
-        except:
-            self.fail()
-
-        if len(result) < 1:
-            self.fail("Received no tasks")
-        if not any(t["title"] == "test" for t in result):
-            self.fail("No test task found")
-
-        # delete everything
-        delete = api.calls.delete_task(new_task_id)
-        try:
-            self.wunderlist.send_request(delete)
-        except:
-            self.fail()
-
-    def test_lists(self):
-        '''Test list related stuff'''
-
-        add_list = api.calls.add_list("test list")
-        try:
-            result = self.wunderlist.send_request(add_list)
-        except:
-            self.fail()
-
-        list_id = result["id"]
-        add_task = api.calls.add_task("test", list_id)
-        try:
-            result = self.wunderlist.send_request(add_task)
-        except:
-            self.fail()
-
-        # check that the list exists and has a task in it
-        get_lists = api.calls.get_lists()
-        get_tasks = api.calls.get_all_tasks()
-        try:
-            results = self.wunderlist.send_requests([get_lists, get_tasks])
-        except:
-            self.fail()
-
-        lists = next(results)
-        tasks = next(results)
-
-        if not any(l["title"] == "test list" for l in lists):
-            self.fail()
-
-        if not any(t["list_id"] == list_id for t in tasks):
-            self.fail()
-
+    def test_task_note(self):
+        result = self.wunderlist.send_request(api.calls.add_task("test",
+                                                                 "inbox"))
         task_id = result["id"]
-        delete_task = api.calls.delete_task(task_id)
-        delete_list = api.calls.delete_list(list_id)
-        try:
-            results = self.wunderlist.send_requests([delete_task, delete_list])
-            next(results)
-            next(results)
-        except:
-            self.fail()
+        add_note = api.calls.set_note_for_task("note", task_id)
+        result = self.wunderlist.send_request(add_note)
+
+        self.assertEqual(result["note"], "note")
+
+        self.wunderlist.send_request(api.calls.delete_task(task_id))
+
+    def test_task_reminder(self):
+        result = self.wunderlist.send_request(api.calls.add_task("test",
+                                                               "inbox"))
+        task_id = result["id"]
+
+        reminder_date = datetime.date(2012, 12, 22).isoformat()
+        add_reminder = api.calls.set_reminder_for_task(task_id, reminder_date)
+        self.wunderlist.send_request(add_reminder)
+        self.wunderlist.send_request(api.calls.delete_task(task_id))
+
+    def test_complete_task(self):
+        result = self.wunderlist.send_request(api.calls.add_task("test",
+                                                                 "inbox"))
+        task_id = result["id"]
+        complete_task = api.calls.complete_task(task_id)
+        complete = self.wunderlist.send_request(complete_task)
+        self.assertIsNotNone(complete["completed_at"])
+        self.assertIsNotNone(complete["completed_by_id"])
+        self.wunderlist.send_request(api.calls.delete_task(task_id))
 
     def test_comments(self):
         # add a task
@@ -187,3 +142,23 @@ class TestAPIRequests(TestAPI):
         self.assertEqual("test", task_comments[0]["text"])
         # cleanup
         delete = self.wunderlist.send_request(api.calls.delete_task(task_id))
+
+
+class TestLists(TestAPI):
+    def test_get_lists(self):
+        add_list = api.calls.add_list("test list")
+        result = self.wunderlist.send_request(add_list)
+        list_id = result["id"]
+
+        lists = self.wunderlist.send_request(api.calls.get_lists())
+        self.assertFalse(len(lists) < 1)
+
+        self.wunderlist.send_request(api.calls.delete_list(list_id))
+
+    def test_add_list(self):
+        add_list = api.calls.add_list("test list")
+        result = self.wunderlist.send_request(add_list)
+        list_id = result["id"]
+
+        self.assertEqual(result["title"], "test list")
+        self.wunderlist.send_request(api.calls.delete_list(list_id))
