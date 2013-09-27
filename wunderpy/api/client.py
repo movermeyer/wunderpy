@@ -1,5 +1,8 @@
 import json
+import time
+
 from requests import Session, Request
+
 from wunderpy.api.calls import batch, login, API_URL
 
 
@@ -42,10 +45,18 @@ class APIClient(object):
             request.data = json.dumps({})
         else:
             request.data = json.dumps(request.data)
+
         r = self.session.send(request.prepare(), timeout=timeout)
 
         if r.status_code < 300:
             return r.json()
+        elif r.status_code == 404:  # dirty hack around this timing bullshit
+            time.sleep(1)
+            r2 = self.session.send(request.prepare(), timeout=timeout)
+            if r2.status_code == 404:  # still doesn't work
+                raise Exception(r2.status_code, r2)
+            else:
+                return r2.json()
         else:
             raise Exception(r.status_code, r)
 
