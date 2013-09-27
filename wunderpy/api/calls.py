@@ -260,3 +260,7 @@ def get_friends():
     '''
 
     return Request("GET", "{}/me/friends".format(API_URL))
+
+def get_quota():
+    return Request("GET", "{}/me/quota".format(API_URL))
+
