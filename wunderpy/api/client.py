@@ -38,13 +38,16 @@ class APIClient(object):
         '''
 
         request.headers = self.headers
-        request.data = json.dumps(request.data)
+        if request.data == []:
+            request.data = json.dumps({})
+        else:
+            request.data = json.dumps(request.data)
         r = self.session.send(request.prepare(), timeout=timeout)
 
         if r.status_code < 300:
             return r.json()
         else:
-            raise Exception(r.status_code)
+            raise Exception(r.status_code, r)
 
 
     def send_requests(self, api_requests, timeout=30):
