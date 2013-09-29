@@ -59,7 +59,6 @@ class APIClient(object):
         else:
             raise Exception(r.status_code, r)
 
-
     def send_requests(self, api_requests, timeout=30):
         '''Sends requests as a batch.
 

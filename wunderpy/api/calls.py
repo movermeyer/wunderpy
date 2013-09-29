@@ -25,6 +25,7 @@ def login(email, password):
     return Request("POST", "{}/login".format(API_URL),
                    data={"email": email, "password": password})
 
+
 def me():
     '''Request for /me, which returns user information.
 
@@ -71,7 +72,7 @@ def add_task(title, list_id, due_date=None, starred=False):
 
 def complete_task(task_id, completed_at=None):
     '''Mark a task as completed.
-        
+
     :param task_id: The ID of the task you are completing.
     :type task_id: str
     :param completed_at: The datetime it was completed at, in ISO format.
@@ -169,7 +170,7 @@ def delete_list(list_id):
 
 def get_comments(task_id):
     '''Get all comments from the specified task.
-    
+
     :param task_id: The ID of the task.
     :type task_id: str
     '''
@@ -180,7 +181,7 @@ def get_comments(task_id):
 
 def add_comment(title, task_id):
     '''Add a comment to a task. I'm not sure if this works with batch
-    
+
     :param title: The comment name/title.
     :param task_id: The ID of the task you're commenting on.
     :type title: str
@@ -261,6 +262,6 @@ def get_friends():
 
     return Request("GET", "{}/me/friends".format(API_URL))
 
+
 def get_quota():
     return Request("GET", "{}/me/quota".format(API_URL))
-

@@ -17,17 +17,19 @@ class Wunderlist(api.APIClient):
         '''Populate the lists with all tasks.'''
 
         request = self.send_requests([api.calls.get_all_tasks(),
-                                          api.calls.get_lists()])
+                                      api.calls.get_lists()])
         tasks = next(request)
         lists = next(request)
 
         inbox = {"title": "inbox", "id": "inbox", "created_on": None,
                  "updated_on": None}
-        inbox["tasks"] = {t["title"]: t for t in tasks if t["list_id"] == "inbox"}
+        inbox["tasks"] = {t["title"]: t for t in tasks
+                          if t["list_id"] == "inbox"}
         self.lists["inbox"] = inbox
 
         for list in lists:
-            list["tasks"] = {t["title"]: t for t in tasks if t["list_id"] == list["id"]}
+            list["tasks"] = {t["title"]: t for t in tasks
+                             if t["list_id"] == list["id"]}
             self.lists[list["title"]] = list
 
     def tasks_for_list(self, list_title):
