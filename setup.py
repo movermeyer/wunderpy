@@ -8,11 +8,11 @@ setup(
     name="wunderpy",
     version="0.2.0",
     author="bsmt",
-    author_email="bsmt@krax.in",
+    author_email="bsmt@bsmt.me",
     url="https://github.com/bsmt/wunderpy",
     license="LICENSE",
     description="An experimental wrapper for the Wunderlist 2 API",
     long_description=open("README.md").read(),
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests",)),
     install_requires=required
 )
