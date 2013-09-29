@@ -29,7 +29,6 @@ class APIClient(object):
         self.id = r["id"]
         self.headers["Authorization"] = "Bearer {}".format(self.token)
 
-
     def send_request(self, request, timeout=30):
         '''Send a single request to Wunderlist in real time.
 
