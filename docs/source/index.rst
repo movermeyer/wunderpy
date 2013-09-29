@@ -21,9 +21,9 @@ Contents
 .. toctree::
    :maxdepth: 1
 
-   examples
    wunderlist
-   _api
+   api_client
+   api_calls
    wunderlist_api/index 
 
 Indices and tables

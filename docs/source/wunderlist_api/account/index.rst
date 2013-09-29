@@ -13,3 +13,4 @@ Calls related to your account.
     friends
     services
     shares
+    quota

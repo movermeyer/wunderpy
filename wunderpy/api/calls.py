@@ -264,4 +264,9 @@ def get_friends():
 
 
 def get_quota():
+    '''Get your account's quota.
+
+    :returns: Request
+    '''
+
     return Request("GET", "{}/me/quota".format(API_URL))

@@ -24,6 +24,8 @@ class APIClient(object):
         self.headers = {"Content-Type": "application/json"}
 
     def login(self, email, password):
+        '''Login to wunderlist'''
+
         r = self.send_request(login(email, password))
         self.token = r["token"]
         self.id = r["id"]
@@ -64,6 +66,7 @@ class APIClient(object):
 
         Returns a generator which will yield the server response for each
         request in the order they were supplied.
+        You must run next() on the result at least once.
 
         :param api_requests: a list of valid, prepared Request objects.
         :type api_requests: list -- Made up of requests.Request objects

@@ -14,7 +14,11 @@ class Wunderlist(api.APIClient):
         self.lists = {}
 
     def update_lists(self):
-        '''Populate the lists with all tasks.'''
+        '''Populate the lists with all tasks.
+
+        This must be run right after logging in,
+        before doing any operations.
+        '''
 
         request = self.send_requests([api.calls.get_all_tasks(),
                                       api.calls.get_lists()])
@@ -38,13 +42,21 @@ class Wunderlist(api.APIClient):
         return self.lists.get(list_title)["tasks"]
 
     def id_for_list(self, list_title):
+        '''Return the ID for a list'''
+
         return self.lists.get(list_title)["id"]
 
     def get_task(self, task_title, list_title):
+        '''Return a dict with all a task with the specified title
+        in the specified list.
+        '''
+
         tasks = self.lists.get(list_title)["tasks"]
         return tasks.get(task_title)
 
     def id_for_task(self, task_title, list_title):
+        '''Return the ID for a task in a list.'''
+
         tasks = self.lists.get(list_title)["tasks"]
         return tasks.get(task_title)["id"]
 
@@ -81,15 +93,21 @@ class Wunderlist(api.APIClient):
         self.tasks_for_list(list_title)[task_title] = new_task
 
     def delete_task(self, task_title, list_title="inbox"):
+        '''Delete a task'''
+
         task_id = self.id_for_task(task_title, list_title)
         new_task = self.send_request(api.calls.delete_task(task_id))
         del self.tasks_for_list(list_title)[task_title]
 
     def add_list(self, list_title):
+        '''Create a new list'''
+
         new_list = self.send_request(api.calls.add_list(list_title))
         new_list["tasks"] = {}
         self.lists[list_title] = new_list
 
     def delete_list(self, list_title):
+        '''Delete a list.'''
+
         self.send_request(api.calls.delete_list(self.id_for_list(list_title)))
         del self.lists[list_title]
