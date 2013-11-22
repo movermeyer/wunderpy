@@ -78,6 +78,14 @@ Now you can run the tests from the project root like this:
 
     nosetests --tc-file test_config.ini
 
+Changelog
+---------
+
+0.2.1
+^^^^^
+* Add a CLI interface
+* Ensure session headers are included in all requests
+
 License
 -------
 
