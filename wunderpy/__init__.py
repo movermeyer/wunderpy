@@ -3,4 +3,7 @@
 .. moduleauthor:: bsmt
 '''
 
+import pkg_resources
+__version__ = pkg_resources.require("wunderpy")[0].version
+
 from .wunderlist import Wunderlist

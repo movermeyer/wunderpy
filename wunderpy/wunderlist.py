@@ -13,6 +13,8 @@ class Wunderlist(api.APIClient):
         api.APIClient.__init__(self)
         self.lists = {}
 
+    # login(self, email, password) is inherited from api.APIClient
+
     def update_lists(self):
         '''Populate the lists with all tasks.
 

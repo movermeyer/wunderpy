@@ -3,7 +3,8 @@ import time
 
 from requests import Session, Request
 
-from wunderpy.api.calls import batch, login, API_URL
+from wunderpy.api.calls import batch, API_URL
+from wunderpy.api.calls import login as login_call
 
 
 def batch_format(request):
@@ -26,9 +27,13 @@ class APIClient(object):
     def login(self, email, password):
         '''Login to wunderlist'''
 
-        r = self.send_request(login(email, password))
-        self.token = r["token"]
+        r = self.send_request(login_call(email, password))
+        self.set_token(r["token"])
         self.id = r["id"]
+
+    def set_token(self, token):
+        '''Set token manually to avoid having to login repeatedly'''
+        self.token = token
         self.headers["Authorization"] = "Bearer {}".format(self.token)
 
     def send_request(self, request, timeout=30):
@@ -42,7 +47,7 @@ class APIClient(object):
         '''
 
         request.headers = self.headers
-        # Include the session headers in the request 
+        # Include the session headers in the request
         request.headers.update(self.session.headers)
         if request.data == []:
             request.data = json.dumps({})

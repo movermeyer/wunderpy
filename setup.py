@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 try:
-    file = open("README.md")
-    description = file.read()
+    desc_file = open("README.md")
+    description = desc_file.read()
 except:
     description = ""
 
@@ -17,5 +17,6 @@ setup(
     description="An experimental wrapper for the Wunderlist 2 API",
     long_description=description,
     packages=find_packages(exclude=("tests",)),
-    install_requires=["requests>=1.1.0", "nose>=1.3.0", "nose-testconfig>=0.9"]
+    install_requires=["requests>=1.1.0"],
+    entry_points={'console_scripts':['wunderlist = wunderpy.cli.main:main']}
 )
