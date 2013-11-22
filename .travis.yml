@@ -4,6 +4,7 @@ python:
     - '3.3'
 install:
     - python setup.py install
+    - pip install nose-testconfig
 env:
   global:
   - secure: ZZ2hIW6D36WKyPOhLAkCcA7lqa8lV8ty8aHrJSONa83DMEbp0NasBqBpPSX0Awp3DPniNnGCn3kPIZXwx/sJuSMCKitmAu4HtYynTK2yhv+A/JJsmnBLMm1OlBZWJ6FJ9LszuZIvXSCA1MLk7QvY5olqqFp1UYEh7ep9CueL9dY=

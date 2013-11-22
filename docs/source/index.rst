@@ -23,6 +23,7 @@ Contents
    api_client
    api_calls
    wunderlist_api/index 
+   cli
 
 Indices and tables
 ==================

@@ -36,3 +36,6 @@ nosetests.xml
 
 *.DS_Store
 /test_config.ini
+.Python
+
+include/python2.7
