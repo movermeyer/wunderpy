@@ -1,7 +1,7 @@
 wunderpy
 ========
 
-|Build Status|
+|Build Status| |Version| |Downloads|
 
 The goal of this project is to make `Wunderlist's`_ private and
 undocumented API less private and better documented, while also
@@ -117,3 +117,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 .. |Build Status| image:: https://travis-ci.org/bsmt/wunderpy.png
    :target: https://travis-ci.org/bsmt/wunderpy
+.. |Version| image:: https://pypip.in/v/wunderpy/badge.png
+    :target: https://pypi.python.org/pypi/wunderpy
+.. |Downloads| image:: https://pypip.in/d/wunderpy/badge.png
+    :target: https://crate.io/packages/wunderpy/
