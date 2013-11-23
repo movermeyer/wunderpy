@@ -3,7 +3,6 @@
 '''
 
 from wunderpy import api
-from requests import Session
 
 
 class Wunderlist(api.APIClient):
@@ -33,10 +32,10 @@ class Wunderlist(api.APIClient):
                           if t["list_id"] == "inbox"}
         self.lists["inbox"] = inbox
 
-        for list in lists:
-            list["tasks"] = {t["title"]: t for t in tasks
-                             if t["list_id"] == list["id"]}
-            self.lists[list["title"]] = list
+        for l in lists:
+            l["tasks"] = {t["title"]: t for t in tasks
+                             if t["list_id"] == l["id"]}
+            self.lists[l["title"]] = l
 
     def tasks_for_list(self, list_title):
         '''Get all tasks belonging to a list.'''
@@ -98,7 +97,7 @@ class Wunderlist(api.APIClient):
         '''Delete a task'''
 
         task_id = self.id_for_task(task_title, list_title)
-        new_task = self.send_request(api.calls.delete_task(task_id))
+        self.send_request(api.calls.delete_task(task_id))
         del self.tasks_for_list(list_title)[task_title]
 
     def add_list(self, list_title):

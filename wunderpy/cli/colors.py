@@ -1,4 +1,5 @@
 # encoding: utf-8
+#pylint: skip-file
 
 """
 Copyright 2013 Diego Navarro Mellén. All rights reserved.
