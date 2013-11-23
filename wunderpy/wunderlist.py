@@ -61,13 +61,13 @@ class Wunderlist(api.APIClient):
         tasks = self.lists.get(list_title)["tasks"]
         return tasks.get(task_title)["id"]
 
-    def add_task(self, title, list="inbox", note=None, due_date=None,
-                 starred=False):
+    def add_task(self, title, list_title="inbox", note=None, due_date=None,
+                 starred=False, **kwargs):
         '''Create a new task.
 
         :param title: The task's name.
         :type title: str
-        :param list: The title of the list that the task will go in.
+        :param list_title: The title of the list that the task will go in.
         :type list: str
         :param note: An additional note in the task.
         :type note: str or None
@@ -77,11 +77,14 @@ class Wunderlist(api.APIClient):
         :type starred: bool
         '''
 
-        list_id = self.lists[list]["id"]
+        if "list" in kwargs:
+            list_title = kwargs["list"]
+
+        list_id = self.lists[list_title]["id"]
         add_task = api.calls.add_task(title, list_id, due_date=due_date,
                                       starred=starred)
         result = self.send_request(add_task)
-        self.lists.get(list)["tasks"][title] = result
+        self.lists.get(list_title)["tasks"][title] = result
 
         if note:
             self.send_request(api.calls.set_note_for_task(note, result["id"]))
