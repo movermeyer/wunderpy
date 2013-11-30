@@ -100,8 +100,8 @@ def pretty_print_task(title, info):
     Format looks like [check] title (star)
     '''
 
-    check = u"\u2713".encode("utf-8")
-    star = u"\u2605".encode("utf-8")
+    check = u"\u2713"
+    star = u"\u2605"
 
     is_completed = check  # in other words, True
     if not info["completed_at"]:
@@ -111,7 +111,7 @@ def pretty_print_task(title, info):
     if not info["starred"]:
         use_star = ""  # False
 
-    line = "[{}] {} {}".format(is_completed, title.encode('utf-8'), use_star)
+    line = u"[{}] {} {}".format(is_completed, title, use_star)
     print(line)
 
 
