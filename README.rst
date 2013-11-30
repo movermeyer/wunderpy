@@ -34,7 +34,7 @@ Example
     w.add_list("test")  # make a new list called "test"
 
     due = datetime.now().isoformat()
-    w.add_task("test wunderpy", list="test", note="a note",
+    w.add_task("test wunderpy", list_title="test", note="a note",
                due_date=due, starred=True)  # add a task to it
     w.complete_task("test wunderpy", "test")  # complete it
     w.delete_task("test wunderpy", "test")  # and delete it
