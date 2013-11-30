@@ -60,12 +60,12 @@ class WunderlistCLI(object):
     def overview(self):
         '''Display an overview of all lists'''
 
-        for title, task_list in self.wunderlist.lists.iteritems():
+        for title, task_list in self.wunderlist.lists.items():
             tasks = task_list["tasks"]
             pretty_print_list(title)
 
             task_count = 0
-            for task_title, info in tasks.iteritems():
+            for task_title, info in tasks.items():
                 if task_count <= 4:
                     pretty_print_task(task_title, info)
                     task_count += 1
@@ -84,7 +84,7 @@ class WunderlistCLI(object):
 
         pretty_print_list(list_title)
 
-        for task_title, info in new_list["tasks"].iteritems():
+        for task_title, info in new_list["tasks"].items():
             pretty_print_task(task_title, info)
 
 
