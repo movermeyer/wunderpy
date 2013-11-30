@@ -111,7 +111,7 @@ def pretty_print_task(title, info):
     if not info["starred"]:
         use_star = ""  # False
 
-    line = "[{}] {} {}".format(is_completed, title, use_star)
+    line = "[{}] {} {}".format(is_completed, title.encode('utf-8'), use_star)
     print(line)
 
 
