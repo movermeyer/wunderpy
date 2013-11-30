@@ -121,3 +121,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     :target: https://pypi.python.org/pypi/wunderpy
 .. |Downloads| image:: https://pypip.in/d/wunderpy/badge.png
     :target: https://crate.io/packages/wunderpy/
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/bsmt/wunderpy/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
