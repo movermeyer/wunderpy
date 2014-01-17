@@ -112,7 +112,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 .. _Wunderlist's: https://wunderlist.com
-.. _here: http://bsmt.me/blog/2013/03/02/reverse-engineering-the-wunderlist-api/
+.. _here: http://bsmt.me/reverse-engineering-the-wunderlist-api/
 .. _readthedocs.: http://wunderpy.readthedocs.org/en/latest/
 
 .. |Build Status| image:: https://travis-ci.org/bsmt/wunderpy.png
