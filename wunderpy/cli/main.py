@@ -2,6 +2,7 @@
 
 
 import argparse
+from datetime import date
 
 from wunderpy import Wunderlist
 from .storage import get_token, setup
@@ -63,6 +64,25 @@ class WunderlistCLI(object):
                         break
             print("")
 
+    def today(self):
+        cur_date = date.today()
+        for title, list in self.wunderlist.lists.iteritems():
+            tasks = list["tasks"]
+            with colors.pretty_output(colors.BOLD, colors.UNDERSCORE) as out:
+                out.write(title)
+            for task_title, info in tasks.iteritems():
+                if not info["completed_at"]:  # only display completed tasks
+                    task_date = info["due_date"]
+                    if task_date:
+                        task_date = task_date.split('-')
+                        year = int(task_date[0])
+                        month = int(task_date[1])
+                        day = int(task_date[2])
+                        task_date = date(year, month, day)
+                        if task_date <= cur_date:
+                            pretty_print_task(task_title, info)
+        print("")
+
     def display(self, list_title):
         try:
             list = self.wunderlist.lists[list_title]
@@ -106,6 +126,9 @@ def main():
     parser.add_argument("-o", "--overview", dest="overview",
                         action="store_true", default=False,
                         help="Display an overview of your Wunderlist.")
+    parser.add_argument("--today", dest="today", action="store_true",
+                        default=False, help="Display all incomplete tasks"
+                        "that are overdue or due today.")
     parser.add_argument("--display", dest="display", action="store_true",
                         default=False, help="Display all items in a list "
                         "specified with --list.")
@@ -134,6 +157,8 @@ def main():
             cli.delete_task(args.task, args.list)
         else:
             cli.delete_list(args.list)
+    elif args.today:
+        cli.today()
     elif args.overview:
         cli.overview(args.num_tasks, args.only_incomplete)
     elif args.display:
