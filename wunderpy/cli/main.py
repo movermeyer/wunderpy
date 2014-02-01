@@ -130,23 +130,23 @@ def main():
                         action="store_true", default=False,
                         help="Display an overview of your Wunderlist.")
     parser.add_argument("--today", dest="today", action="store_true",
-                        default=False, help="Display all incomplete tasks"
+                        default=False, help="Display all incomplete tasks "
                         "that are overdue or due today.")
     parser.add_argument("--display", dest="display", action="store_true",
                         default=False, help="Display all items in a list "
                         "specified with --list.")
-    parser.add_argument("-l", "--list", dest="list", default="inbox",
-                        help="Used to specify a list, either for a task in a "
-                        "certain list, or for a command that only operates "
-                        "on lists. Default is inbox.")
     parser.add_argument("-i", "--incomplete", dest="only_incomplete",
                         action="store_true", default=False,
                         help="Only show incomplete tasks in overview.")
     parser.add_argument("-n", "--num", dest="num_tasks", type=int, default=5,
                         help="Choose the number of tasks to display from "
-                        "each list [default 5]")
+                        "each list. [default 5]")
+    parser.add_argument("-l", "--list", dest="list", default="inbox",
+                        help="Used to specify a list, either for a task in a "
+                        "certain list, or for a command that only operates "
+                        "on lists. Default is inbox.")
     parser.add_argument("-t", "--task", dest="task",
-                        help="Used to specify a task name.")
+                        help="Used to specify a task name.")                    
     args = parser.parse_args()
 
     cli = WunderlistCLI()
