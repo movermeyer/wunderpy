@@ -126,7 +126,6 @@ class TestTasks(TestAPI):
         complete_task = api.calls.complete_task(task_id)
         complete = self.wunderlist.send_request(complete_task)
         self.assertIsNotNone(complete["completed_at"])
-        self.assertIsNotNone(complete["completed_by_id"])
         self.wunderlist.send_request(api.calls.delete_task(task_id))
 
     def test_comments(self):
