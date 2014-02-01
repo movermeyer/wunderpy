@@ -1,7 +1,10 @@
+'''Facilities for a client that only sends requests to the Wunderlist API'''
+
+
 import json
 import time
 
-from requests import Session, Request
+from requests import Session
 
 from wunderpy.api.calls import batch, API_URL
 from wunderpy.api.calls import login as login_call
@@ -18,6 +21,7 @@ def batch_format(request):
 
 
 class APIClient(object):
+    '''A class implementing all of the features needed to talk to Wunderlist'''
     def __init__(self):
         self.session = Session()
         self.token = None

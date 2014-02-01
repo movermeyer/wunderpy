@@ -12,6 +12,12 @@ COMMENTS_URL = "https://comments.wunderlist.com"
 
 
 def batch(ops):
+    '''Make a Request for a batch call.
+
+    :param ops: a list of pre-formatted requests
+    :returns: Request
+    '''
+
     request_body = {"ops": ops, "sequential": True}
     return Request("POST", "{}/batch".format(API_URL), data=request_body)
 
