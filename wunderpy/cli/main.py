@@ -45,7 +45,7 @@ class WunderlistCLI(object):
     def delete_list(self, list):
         self.wunderlist.delete_list(list)
 
-    def overview(self):
+    def overview(self, num_tasks):
         for title, list in self.wunderlist.lists.iteritems():
             tasks = list["tasks"]
             with colors.pretty_output(colors.BOLD, colors.UNDERSCORE) as out:
@@ -53,7 +53,7 @@ class WunderlistCLI(object):
 
             task_count = 0
             for task_title, info in tasks.iteritems():
-                if task_count <= 4:
+                if task_count < num_tasks:
                     pretty_print_task(task_title, info)
                     task_count += 1
                 else:
@@ -102,8 +102,7 @@ def main():
                         default=False, help="Delete a task or list.")
     parser.add_argument("-o", "--overview", dest="overview",
                         action="store_true", default=False,
-                        help="Display an overview of your "
-                        "Wunderlist. Limited to 5 tasks per list.")
+                        help="Display an overview of your Wunderlist.")
     parser.add_argument("--display", dest="display", action="store_true",
                         default=False, help="Display all items in a list "
                         "specified with --list.")
@@ -111,12 +110,15 @@ def main():
                         help="Used to specify a list, either for a task in a "
                         "certain list, or for a command that only operates "
                         "on lists. Default is inbox.")
+    parser.add_argument("-n", "--num", dest="num_tasks", type=int, default=5,
+                        help="Choose the number of tasks to display from "
+                        "each list [default 5]")
     parser.add_argument("-t", "--task", dest="task",
                         help="Used to specify a task name.")
     args = parser.parse_args()
 
     cli = WunderlistCLI()
-
+    
     if args.add:
         cli.add(args.task, args.list)
     elif args.complete:
@@ -127,8 +129,8 @@ def main():
         else:
             cli.delete_list(args.list)
     elif args.overview:
-        cli.overview()
+        cli.overview(args.num_tasks)
     elif args.display:
         cli.display(args.list)
     else:
-        cli.overview()
+        cli.overview(args.num_tasks)
