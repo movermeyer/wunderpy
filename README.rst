@@ -78,6 +78,11 @@ Now you can run the tests from the project root like this:
 
     nosetests --tc-file test_config.ini
 
+Contributing
+------------
+
+First off, I can't thank you enough. This is my first open source project that receives even a small amount of attention, so I'm a bit new to all of this. I don't have many guidelines, just make sure your code passes PEP8, and try to have pull requests merge to the develop branch. I like to follow something akin to the `gitflow`_ branching model, so merging to develop makes that a lot easier.
+
 Changelog
 ---------
 
@@ -121,6 +126,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     :target: https://pypi.python.org/pypi/wunderpy
 .. |Downloads| image:: https://pypip.in/d/wunderpy/badge.png
     :target: https://crate.io/packages/wunderpy/
+
+.. _gitflow: http://nvie.com/posts/a-successful-git-branching-model/
 
 .. image:: https://d2weczhvl823v0.cloudfront.net/bsmt/wunderpy/trend.png
    :alt: Bitdeli badge
