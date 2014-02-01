@@ -25,7 +25,7 @@ def setup():
         except:
             again = raw_input("Login failed, try again? (y/n) ")
             if again == "y" or again == "Y":
-                prompt_login(wunderlist)
+                prompt_login()
             else:
                 exit()
 
@@ -41,11 +41,15 @@ def setup():
 
 
 def save_token(token):
+    '''Save a token to the config file.'''
+
     with open(os.path.expanduser("~/.wunderpyrc"), "w") as store:
         json.dump({"token": token}, store)
 
 
 def get_token():
+    '''Get the token from the config file'''
+
     with open(os.path.expanduser("~/.wunderpyrc"), "r") as store:
         token = json.load(store)
         return token["token"]
