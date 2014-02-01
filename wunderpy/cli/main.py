@@ -63,7 +63,7 @@ class WunderlistCLI(object):
                     else:
                         break
             print("")
-    
+
     def today(self):
         cur_date = date.today()
         for title, list in self.wunderlist.lists.iteritems():
@@ -71,7 +71,7 @@ class WunderlistCLI(object):
             with colors.pretty_output(colors.BOLD, colors.UNDERSCORE) as out:
                 out.write(title)
             for task_title, info in tasks.iteritems():
-                if not info["completed_at"]: #only display completed tasks
+                if not info["completed_at"]:  # only display completed tasks
                     task_date = info["due_date"]
                     if task_date:
                         task_date = task_date.split('-')
@@ -79,7 +79,7 @@ class WunderlistCLI(object):
                         month = int(task_date[1])
                         day = int(task_date[2])
                         task_date = date(year, month, day)
-                        if task_date <= cur_date:  
+                        if task_date <= cur_date:
                             pretty_print_task(task_title, info)
         print("")
 
