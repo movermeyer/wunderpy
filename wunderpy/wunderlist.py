@@ -34,7 +34,7 @@ class Wunderlist(api.APIClient):
 
         for l in lists:
             l["tasks"] = {t["title"]: t for t in tasks
-                             if t["list_id"] == l["id"]}
+                          if t["list_id"] == l["id"]}
             self.lists[l["title"]] = l
 
     def tasks_for_list(self, list_title):

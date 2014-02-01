@@ -53,9 +53,9 @@ class WunderlistCLI(object):
 
             task_count = 0
             for task_title, info in tasks.iteritems():
-                # if only_incomplete is true, we want to make sure it hasn't 
+                # if only_incomplete is true, we want to make sure it hasn't
                 # already been completed:
-                if not only_incomplete or not info["completed_at"]: 
+                if not only_incomplete or not info["completed_at"]:
                     if task_count < num_tasks:
                         pretty_print_task(task_title, info)
                         task_count += 1
@@ -88,9 +88,10 @@ def pretty_print_task(title, info):
     use_star = STAR  # True
     if not info["starred"]:
         use_star = ""  # False
-    
+
     line = "[{}] {} {}".format(is_completed, title, use_star)
     print(line)
+
 
 def main():
     parser = argparse.ArgumentParser(description="A Wunderlist CLI client.")
@@ -113,7 +114,7 @@ def main():
                         "certain list, or for a command that only operates "
                         "on lists. Default is inbox.")
     parser.add_argument("-i", "--incomplete", dest="only_incomplete",
-                        action="store_true", default=False, 
+                        action="store_true", default=False,
                         help="Only show incomplete tasks in overview.")
     parser.add_argument("-n", "--num", dest="num_tasks", type=int, default=5,
                         help="Choose the number of tasks to display from "
@@ -123,7 +124,7 @@ def main():
     args = parser.parse_args()
 
     cli = WunderlistCLI()
-    
+
     if args.add:
         cli.add(args.task, args.list)
     elif args.complete:
