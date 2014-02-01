@@ -83,7 +83,7 @@ class WunderlistCLI(object):
                             pretty_print_task(task_title, info)
         print("")
 
-    def display(self, list_title):
+    def display(self, list_title, only_incomplete):
         try:
             list = self.wunderlist.lists[list_title]
         except KeyError:
@@ -94,7 +94,10 @@ class WunderlistCLI(object):
             out.write(list_title)
 
         for task_title, info in list["tasks"].iteritems():
-            pretty_print_task(task_title, info)
+            # if only_incomplete is true, we want to make sure it hasn't
+            # already been completed:
+            if not only_incomplete or not info["completed_at"]:
+                pretty_print_task(task_title, info)
 
 
 def pretty_print_task(title, info):
@@ -162,6 +165,6 @@ def main():
     elif args.overview:
         cli.overview(args.num_tasks, args.only_incomplete)
     elif args.display:
-        cli.display(args.list)
+        cli.display(args.list, args.only_incomplete)
     else:
         cli.overview(args.num_tasks, args.only_incomplete)
