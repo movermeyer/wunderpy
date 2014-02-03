@@ -2,7 +2,7 @@
 
 
 import argparse
-from datetime import date
+from datetime import date, timedelta
 
 from wunderpy import Wunderlist
 from .storage import get_token, setup
@@ -64,24 +64,33 @@ class WunderlistCLI(object):
                         break
             print("")
 
-    def today(self):
+    def tasks_within_n_days(self, n):
         cur_date = date.today()
         for title, list in self.wunderlist.lists.iteritems():
+            needs_header = True
             tasks = list["tasks"]
-            with colors.pretty_output(colors.BOLD, colors.UNDERSCORE) as out:
-                out.write(title)
             for task_title, info in tasks.iteritems():
-                if not info["completed_at"]:  # only display completed tasks
-                    task_date = info["due_date"]
-                    if task_date:
-                        task_date = task_date.split('-')
-                        year = int(task_date[0])
-                        month = int(task_date[1])
-                        day = int(task_date[2])
-                        task_date = date(year, month, day)
-                        if task_date <= cur_date:
-                            pretty_print_task(task_title, info)
+                # only display tasks that are incomplete and have a due date
+                if not info["completed_at"] and info["due_date"]:
+                    task_date = info["due_date"].split('-')
+                    year = int(task_date[0])
+                    month = int(task_date[1])
+                    day = int(task_date[2])
+                    task_date = date(year, month, day)
+                    if task_date <= cur_date + timedelta(n):
+                        if needs_header:
+                            needs_header = False
+                            with colors.pretty_output(colors.BOLD,
+                                                      colors.UNDERSCORE) as o:
+                                o.write(title)
+                        pretty_print_task(task_title, info)
         print("")
+
+    def today(self):
+        return self.tasks_within_n_days(0)
+
+    def week(self):
+        return self.tasks_within_n_days(6)
 
     def display(self, list_title, only_incomplete):
         try:
@@ -129,6 +138,9 @@ def main():
     parser.add_argument("-o", "--overview", dest="overview",
                         action="store_true", default=False,
                         help="Display an overview of your Wunderlist.")
+    parser.add_argument("--week", dest="week", action="store_true",
+                        default=False, help="Display all incomplete tasks"
+                        "that are overdue or due in the next week.")
     parser.add_argument("--today", dest="today", action="store_true",
                         default=False, help="Display all incomplete tasks"
                         "that are overdue or due today.")
@@ -162,6 +174,8 @@ def main():
             cli.delete_list(args.list)
     elif args.today:
         cli.today()
+    elif args.week:
+        cli.week()
     elif args.overview:
         cli.overview(args.num_tasks, args.only_incomplete)
     elif args.display:
