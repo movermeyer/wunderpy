@@ -55,8 +55,9 @@ class TestBasicRequests(TestAPI):
         friends = api.calls.get_friends()
 
         try:
-            results = self.wunderlist.send_requests([me, shares, services, events,
-                                             settings, friends])
+            results = self.wunderlist.send_requests([me, shares, services,
+                                                    events, settings,
+                                                    friends])
         except:
             self.fail("Batch request failure")
 
@@ -111,7 +112,7 @@ class TestTasks(TestAPI):
 
     def test_task_reminder(self):
         result = self.wunderlist.send_request(api.calls.add_task("test",
-                                                               "inbox"))
+                                                                 "inbox"))
         task_id = result["id"]
 
         reminder_date = datetime.date(2012, 12, 22).isoformat()
@@ -136,7 +137,8 @@ class TestTasks(TestAPI):
         # add a comment to the task
         add_comment = api.calls.add_comment("test", task_id)
         comment_result = self.wunderlist.send_request(add_comment)
-        task_comments = self.wunderlist.send_request(api.calls.get_comments(task_id))
+        task_comments = self.wunderlist.send_request(
+            api.calls.get_comments(task_id))
         # see if there's a comment with the title we gave
         self.assertEqual("test", task_comments[0]["text"])
         # cleanup
