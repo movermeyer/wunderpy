@@ -140,8 +140,3 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     :target: https://crate.io/packages/wunderpy/
 
 .. _gitflow: http://nvie.com/posts/a-successful-git-branching-model/
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/bsmt/wunderpy/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
