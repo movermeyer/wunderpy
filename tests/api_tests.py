@@ -61,12 +61,8 @@ class TestBasicRequests(TestAPI):
         except:
             self.fail("Batch request failure")
 
-        me_result = next(results)
-        shares_result = next(results)
-        services_result = next(results)
-        events_result = next(results)
-        settings_result = next(results)
-        friends_result = next(results)
+        me_result, shares_result, services_resukt, events_result, \
+            settings_result, friends_result = results
 
         # more stupid assertions, just to make sure we have some valid result
         self.assertEqual(self.wunderlist.id, me_result["id"])
