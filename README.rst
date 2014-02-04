@@ -86,6 +86,18 @@ First off, I can't thank you enough. This is my first open source project that r
 Changelog
 ---------
 
+0.2.2
+^^^^^
+
+* Client
+  - Add TaskList and Task classes
+  - Add filtering methods
+  - Add tests for new classes and most Wunderlist functionality
+* CLI
+  - Add --today and --week options
+  - Only display incomplete tasks by default, add --show-complete option.
+  
+
 0.2.1
 ^^^^^
 * Add a CLI interface
