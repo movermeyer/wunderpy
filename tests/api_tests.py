@@ -14,8 +14,16 @@ except:  # no config, so travis is running
     EMAIL = os.environ.get("WUNDERPY_EMAIL")
     PASSWORD = os.environ.get("WUNDERPY_PASSWORD")
 
+if not EMAIL and not PASSWORD:
+    __test__ = False
+else:
+    __test__ = True
+
 
 class TestAPI(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        unittest.TestCase.__init__(self, *args, **kwargs)
+
     @classmethod
     def setUpClass(cls):
         cls.wunderlist = Wunderlist()

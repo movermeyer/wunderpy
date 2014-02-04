@@ -62,9 +62,10 @@ Running Tests
 
 I'm working on writing tests for everything.
 
-If you want to run said tests, make sure you have nose and
-nose-testconfig installed. Next, setup an ini config somewhere (I use
-the project root) that looks something like this:
+If you want to run said tests, make sure you have nose installed. Once you have nose, all you have to do is run nosetests.
+
+By default, nose will not run any tests for the API calls, as they take around 30 seconds. If you want to run those tests, you can either store your email and password in
+the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testconfig and create an ini file like this: 
 
 ::
 
@@ -72,11 +73,7 @@ the project root) that looks something like this:
     email = test@email.web
     password = password
 
-Now you can run the tests from the project root like this:
-
-::
-
-    nosetests --tc-file test_config.ini
+Then you can run nosetests with the --tc-file argument.
 
 Contributing
 ------------
@@ -90,12 +87,15 @@ Changelog
 ^^^^^
 
 * Client
-  - Add TaskList and Task classes
-  - Add filtering methods
-  - Add tests for new classes and most Wunderlist functionality
+
+  * Add TaskList and Task classes
+  * Add filtering methods
+  * Add tests for new classes and most Wunderlist functionality
+
 * CLI
-  - Add --today and --week options
-  - Only display incomplete tasks by default, add --show-complete option.
+
+  * Add --today and --week options
+  * Only display incomplete tasks by default, add --show-complete option.
   
 
 0.2.1
