@@ -45,9 +45,9 @@ class Wunderlist(api.APIClient):
 
         for list_info in lists:
             new_list = TaskList(info=list_info)
-            tasks = [Task(t, parent_list=new_list) for t in tasks
+            new_tasks = [Task(t, parent_list=new_list) for t in tasks
                      if t["list_id"] == list_info["id"]]
-            new_list.tasks = tasks
+            new_list.tasks = new_tasks
             self.lists.append(new_list)
 
     def list_with_title(self, list_title):
