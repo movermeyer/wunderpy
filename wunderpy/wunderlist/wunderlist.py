@@ -12,9 +12,13 @@ from .task import Task
 class Wunderlist(api.APIClient):
     '''A basic Wunderlist client.'''
 
-    def __init__(self, lists=[]):
+    def __init__(self, lists=None):
         api.APIClient.__init__(self)
-        self.lists = lists
+
+        if lists:
+            self.lists = lists
+        else:
+            self.lists = []
 
     def __repr__(self):
         "<wunderpy.Wunderlist: {}>".format(self.token)
@@ -45,12 +49,14 @@ class Wunderlist(api.APIClient):
 
         for list_info in lists:
             new_list = TaskList(info=list_info)
-            tasks = [Task(t, parent_list=new_list) for t in tasks
+            new_tasks = [Task(t, parent_list=new_list) for t in tasks
                      if t["list_id"] == list_info["id"]]
-            new_list.tasks = tasks
+            new_list.tasks = new_tasks
             self.lists.append(new_list)
 
     def list_with_title(self, list_title):
+        '''Return a TaskList with the given title.'''
+
         lists = self.lists_with_title(list_title)
         if len(lists) >= 1:
             return lists[0]
@@ -58,7 +64,9 @@ class Wunderlist(api.APIClient):
             return None
 
     def lists_with_title(self, list_title):
-        return filter(lambda list: list.title == list_title, self.lists)
+        '''Return all TaskLists with the given title.'''
+
+        return [list for list in self.lists if list.title == list_title]
 
     def tasks_for_list(self, list_title):
         '''Get all tasks belonging to a list.'''
@@ -92,6 +100,8 @@ class Wunderlist(api.APIClient):
         return list(tasks)
 
     def tasks_due_on(self, date):
+        '''Return all Tasks due on the given date.'''
+
         tasks = [l.tasks_due_on(date) for l in self.lists]
         tasks = itertools.chain.from_iterable(tasks)
         return list(tasks)
@@ -143,7 +153,7 @@ class Wunderlist(api.APIClient):
         self.send_request(api.calls.delete_task(task_id))
 
         task_to_remove = self.get_task(task_title, list_title)
-        self.list_with_title(list_title).remote_task(task_to_remove)
+        self.list_with_title(list_title).remove_task(task_to_remove)
 
     def add_list(self, list_title):
         '''Create a new list'''
@@ -156,4 +166,4 @@ class Wunderlist(api.APIClient):
         '''Delete a list.'''
 
         self.send_request(api.calls.delete_list(self.id_for_list(list_title)))
-        self.lists.delete(self.list_with_title(list_title))
+        self.lists.remove(self.list_with_title(list_title))

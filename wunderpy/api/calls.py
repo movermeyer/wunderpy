@@ -2,7 +2,6 @@
 .. module:: calls
 '''
 
-
 import datetime
 from requests import Request
 

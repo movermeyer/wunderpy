@@ -14,8 +14,6 @@ class TestClient(unittest.TestCase):
         inbox_info = {"title": "inbox", "id": "inbox", "created_on": None,
                       "updated_on": None}
         self.inbox = TaskList(info=inbox_info)
-        self.wl.lists = []
-        self.inbox.tasks = []
         self.wl.lists.append(self.inbox)
 
     def test_list_filter(self):
@@ -51,7 +49,6 @@ class TestClient(unittest.TestCase):
 
     def test_due_before(self):
         one = TaskList({"title": "one", "id": "one"})
-        one.tasks = []  # unittest likes to save this stuff across tests
         task_one = Task({"title": "task1", "id": "one",
                         "due_date": (date.today() -
                                      timedelta(days=1)).isoformat()})
@@ -59,7 +56,6 @@ class TestClient(unittest.TestCase):
         self.wl.lists.append(one)
 
         two = TaskList({"title": "two", "id": "two"})
-        two.tasks = []
         task_two = Task({"title": "two", "id": "two",
                         "due_date": (date.today() +
                                      timedelta(days=1)).isoformat()})
@@ -78,7 +74,6 @@ class TestClient(unittest.TestCase):
 
     def test_due_on(self):
         one = TaskList({"title": "one", "id": "one"})
-        one.tasks = []
         task_one = Task({"title": "task1", "id": "one",
                         "due_date": (date.today() -
                                      timedelta(days=1)).isoformat()})
@@ -86,7 +81,6 @@ class TestClient(unittest.TestCase):
         self.wl.lists.append(one)
 
         two = TaskList({"title": "two", "id": "two"})
-        two.tasks = []
         task_two = Task({"title": "two", "id": "two",
                         "due_date": (date.today().isoformat())})
         two.add_task(task_two)
@@ -108,7 +102,6 @@ class TestTaskList(unittest.TestCase):
         info = {"title": "inbox", "id": "inbox", "created_on": None,
                 "updated_on": None}
         self.test_list = TaskList(info=info)
-        self.test_list.tasks = []  # reset tasks
 
     def test_info(self):
         '''Ensure that the dict from Wunderlist is retained.'''
