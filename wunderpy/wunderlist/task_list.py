@@ -1,7 +1,10 @@
+'''Implements the TaskList class.'''
+
+
 class TaskList(dict):
     '''Object representing a single task list in Wunderlist.'''
 
-    def __init__(self, info, tasks=[], *args):
+    def __init__(self, info, tasks=None, *args):
         '''
         :param tasks: A list of Task objects this list contains.
         :type tasks: list
@@ -9,7 +12,10 @@ class TaskList(dict):
         :type info: dict
         '''
 
-        self.tasks = tasks
+        if tasks:
+            self.tasks = tasks
+        else:
+            self.tasks = []
         self.info = info
         dict.__init__(self, args)
 
@@ -25,10 +31,14 @@ class TaskList(dict):
 
     @property
     def title(self):
+        '''The TaskList's title.'''
+
         return self.info.get("title").encode("utf-8")
 
     @property
     def id(self):
+        '''The TaskList's ID.'''
+
         return self.info.get("id")
 
     def add_task(self, task):
@@ -36,9 +46,13 @@ class TaskList(dict):
         self.tasks.append(task)
 
     def remove_task(self, task):
+        '''Remove a Task from the TaskList.'''
+
         self.tasks.remove(task)
 
     def task_with_title(self, title):
+        '''Return the most recently created Task with the given title.'''
+
         tasks = self.tasks_with_title(title)
         if len(tasks) >= 1:
             #return most recent task
@@ -52,20 +66,21 @@ class TaskList(dict):
         :param title: Title to match Tasks with.
         :type title: str
         '''
-
-        return filter(lambda task: task.title == title, self.tasks)
+        return [task for task in self.tasks if task.title == title]
 
     def tasks_due_before(self, date):
         '''Find all Tasks that are due before date.'''
 
-        return filter(lambda task: task.due_date and task.due_date < date,
-                      self.tasks)
+        return [task for task in self.tasks
+                if task.due_date and task.due_date < date]
 
     def tasks_due_on(self, date):
         '''Find all Tasks that are due on date.'''
 
-        return filter(lambda task: task.due_date and task.due_date == date,
-                      self.tasks)
+        return [task for task in self.tasks
+                if task.due_date and task.due_date == date]
 
     def incomplete_tasks(self):
-        return filter(lambda task: task.completed is not True, self.tasks)
+        '''Return all incomplete tasks.'''
+
+        return [task for task in self.tasks if task.completed is not True]

@@ -6,10 +6,12 @@ from datetime import date, timedelta
 
 from wunderpy import Wunderlist
 from .storage import get_token, setup
-import colors
+import wunderpy.cli.colors as colors
 
 
 class WunderlistCLI(object):
+    '''Handles basic tasks performed by the CLI app.'''
+
     def __init__(self):
         self.wunderlist = None
         self.get_wunderlist()
@@ -49,7 +51,7 @@ class WunderlistCLI(object):
         '''
 
         if task_title and list_title:  # adding a task to a list
-            self.wunderlist.add_task(task, list_title=list_title)
+            self.wunderlist.add_task(task_title, list_title=list_title)
         elif list_title != "inbox":  # creating a list
             self.wunderlist.add_list(list)
 
@@ -151,14 +153,14 @@ def pretty_print_task(task):
     [ (check) ] title (star)
     '''
 
-    CHECK = u"\u2713".encode("utf-8")
-    STAR = u"\u2605".encode("utf-8")
+    check_mark = u"\u2713".encode("utf-8")
+    star = u"\u2605".encode("utf-8")
 
-    is_completed = CHECK  # in other words, True
+    is_completed = check_mark  # in other words, True
     if not task.completed:
         is_completed = " "  # not completed, False
 
-    use_star = STAR  # True
+    use_star = star  # True
     if not task.starred:
         use_star = ""  # False
 
