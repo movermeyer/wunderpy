@@ -50,7 +50,7 @@ class Wunderlist(api.APIClient):
         for list_info in lists:
             new_list = TaskList(info=list_info)
             new_tasks = [Task(t, parent_list=new_list) for t in tasks
-                     if t["list_id"] == list_info["id"]]
+                         if t["list_id"] == list_info["id"]]
             new_list.tasks = new_tasks
             self.lists.append(new_list)
 
