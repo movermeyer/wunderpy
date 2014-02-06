@@ -103,7 +103,7 @@ class WunderlistCLI(object):
             if show_complete:
                 to_print[task_list.title] = tasks
             else:
-                _tasks = filter(lambda t: t.completed is not True, tasks)
+                _tasks = [t for t in tasks if t.completed is not True]
                 to_print[task_list.title] = _tasks
 
         self.print_tasks(to_print, limit)
@@ -123,7 +123,7 @@ class WunderlistCLI(object):
             if show_complete:
                 to_print[task_list.title] = tasks
             else:
-                _tasks = filter(lambda t: t.completed is not True, tasks)
+                _tasks = [t for t in tasks if t.completed is not True]
                 to_print[task_list.title] = _tasks
 
         self.print_tasks(to_print, limit)
@@ -142,7 +142,7 @@ class WunderlistCLI(object):
         if show_complete:
             to_print[_list.title] = _list.tasks
         else:
-            _tasks = filter(lambda t: t.completed is not True, _list.tasks)
+            _tasks = [t for t in _list.tasks if t.completed is not True]
             to_print[_list.title] = _tasks
 
         self.print_tasks(to_print, len(to_print[_list.title]))
