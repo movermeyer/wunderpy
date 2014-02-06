@@ -7,10 +7,9 @@ try:
 except:
     description = ""
 
-
 setup(
     name="wunderpy",
-    version="0.2.1",
+    version="0.2.2",
     author="bsmt",
     author_email="bsmt@bsmt.me",
     url="https://github.com/bsmt/wunderpy",
