@@ -1,4 +1,4 @@
-/me/<task_id>
+/<task_id>
 =============
 
 Modify or delete tasks.
