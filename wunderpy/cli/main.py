@@ -53,7 +53,7 @@ class WunderlistCLI(object):
         if task_title and list_title:  # adding a task to a list
             self.wunderlist.add_task(task_title, list_title=list_title)
         elif list_title != "inbox":  # creating a list
-            self.wunderlist.add_list(list)
+            self.wunderlist.add_list(list_title)
 
     def complete(self, task_title, list_title):
         '''Complete a task'''
