@@ -83,6 +83,11 @@ First off, I can't thank you enough. This is my first open source project that r
 Changelog
 ---------
 
+0.2.3
+^^^^^
+
+* Bugfixes
+
 0.2.2
 ^^^^^
 
