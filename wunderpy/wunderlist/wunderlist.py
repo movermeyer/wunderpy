@@ -126,7 +126,7 @@ class Wunderlist(api.APIClient):
         if "list" in kwargs:
             list_title = kwargs["list"]
 
-        list_id = self.list_with_title(list_title)
+        list_id = self.id_for_list(list_title)
         add_task = api.calls.add_task(title, list_id, due_date=due_date,
                                       starred=starred)
         result = self.send_request(add_task)
