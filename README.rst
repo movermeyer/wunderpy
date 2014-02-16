@@ -75,6 +75,12 @@ the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testc
 
 Then you can run nosetests with the --tc-file argument.
 
+CLI
+---
+
+Versions 0.2.1 through 0.3 offered a (very bad) command line Wunderlist client. It has since been removed, and an alternative project can be found at https://github.com/Underling/arbeit.
+
+
 Contributing
 ------------
 
