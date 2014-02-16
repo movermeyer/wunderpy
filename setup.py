@@ -28,6 +28,5 @@ setup(
                 'Topic :: Documentation',
                 'Environment :: Console'],
     packages=find_packages(exclude=("tests",)),
-    install_requires=["requests>=1.1.0", "python-dateutil==2.2"],
-    entry_points={'console_scripts': ['wunderlist = wunderpy.cli.main:main']}
+    install_requires=["requests>=1.1.0", "python-dateutil==2.2"]
 )
