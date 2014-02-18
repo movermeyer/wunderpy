@@ -83,7 +83,11 @@ First off, I can't thank you enough. This is my first open source project that r
 Changelog
 ---------
 
-0.2.4
+0.2.5
+^^^^^
+* Fix python 3 support
+
+0.2.3 - 0.2.4
 ^^^^^
 
 * Bugfixes
