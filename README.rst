@@ -89,7 +89,7 @@ Changelog
 * Fix python 3 support
 
 0.2.3 - 0.2.4
-^^^^^
+^^^^^^^^^^^^^
 
 * Bugfixes
 
