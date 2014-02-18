@@ -62,10 +62,10 @@ Running Tests
 
 I'm working on writing tests for everything.
 
-If you want to run said tests, make sure you have nose installed. Once you have nose, all you have to do is run nosetests.
+If you want to run said tests, make sure you have tox installed. Once you have nose, all you have to do is run tox.
 
 By default, nose will not run any tests for the API calls, as they take around 30 seconds. If you want to run those tests, you can either store your email and password in
-the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testconfig and create an ini file like this: 
+the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can create an ini file like this:
 
 ::
 
@@ -73,7 +73,7 @@ the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testc
     email = test@email.web
     password = password
 
-Then you can run nosetests with the --tc-file argument.
+Then you would run tox -- --tc-file your_config.ini.
 
 Contributing
 ------------
