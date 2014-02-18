@@ -7,6 +7,7 @@ from datetime import date, timedelta
 from wunderpy import Wunderlist
 from .storage import get_token, setup
 import wunderpy.cli.colors as colors
+import wunderpy.cli.six as six
 
 
 class WunderlistCLI(object):
@@ -34,7 +35,7 @@ class WunderlistCLI(object):
         '''
 
         with colors.pretty_output(colors.BOLD, colors.UNDERSCORE) as out:
-            for list_title, _tasks in tasks.iteritems():
+            for list_title, _tasks in six.iteritems(tasks):
                 if len(_tasks) > 0:
                     out.write("\n" + list_title)
 
@@ -153,8 +154,12 @@ def pretty_print_task(task):
     [ (check) ] title (star)
     '''
 
-    check_mark = u"\u2713".encode("utf-8")
-    star = u"\u2605".encode("utf-8")
+    if six.PY2:
+        check_mark = u"\u2713".encode("utf-8")
+        star = u"\u2605".encode("utf-8")
+    elif six.PY3:
+        check_mark = u"\u2713"
+        star = u"\u2605"
 
     is_completed = check_mark  # in other words, True
     if not task.completed:
@@ -164,7 +169,14 @@ def pretty_print_task(task):
     if not task.starred:
         use_star = ""  # False
 
-    line = "[{}] {} {}".format(is_completed, task.title, use_star)
+    if six.PY2:
+        line = "[{}] {} {}".format(is_completed,
+                                   task.title.encode("utf-8"),
+                                   use_star)
+    elif six.PY3:
+        line = "[{}] {} {}".format(is_completed,
+                                   task.title,
+                                   use_star)
     print(line)
 
 

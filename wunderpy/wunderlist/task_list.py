@@ -32,8 +32,7 @@ class TaskList(dict):
     @property
     def title(self):
         '''The TaskList's title.'''
-
-        return self.info.get("title").encode("utf-8")
+        return self.info.get("title")
 
     @property
     def id(self):

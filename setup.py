@@ -9,7 +9,7 @@ except:
 
 setup(
     name="wunderpy",
-    version="0.2.4",
+    version="0.2.5",
     author="bsmt",
     author_email="bsmt@bsmt.me",
     url="https://github.com/bsmt/wunderpy",
@@ -24,10 +24,11 @@ setup(
                 'Programming Language :: Python :: 2.7',
                 'Programming Language :: Python :: 3',
                 'Programming Language :: Python :: 3.3',
+                'Programming Language :: Python :: Implementation :: PyPy'
                 'Topic :: Utilities',
                 'Topic :: Documentation',
                 'Environment :: Console'],
     packages=find_packages(exclude=("tests",)),
-    install_requires=["requests>=1.1.0", "python-dateutil==2.2"],
+    install_requires=["requests>=2.0.0", "python-dateutil==2.2"],
     entry_points={'console_scripts': ['wunderlist = wunderpy.cli.main:main']}
 )
