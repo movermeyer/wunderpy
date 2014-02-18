@@ -38,7 +38,7 @@ class Task(dict):
     def title(self):
         '''The Task's title.'''
 
-        return self.info.get("title").encode("utf-8")
+        return self.info.get("title")
 
     @property
     def id(self):
