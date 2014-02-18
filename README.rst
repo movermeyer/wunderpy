@@ -62,10 +62,11 @@ Running Tests
 
 I'm working on writing tests for everything.
 
-If you want to run said tests, make sure you have tox installed. Once you have nose, all you have to do is run tox.
+If you want to run said tests, make sure you have tox installed. After that, all you have to do is run tox.
 
-By default, nose will not run any tests for the API calls, as they take around 30 seconds. If you want to run those tests, you can either store your email and password in
-the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can create an ini file like this:
+By default, it will not run any tests for the API calls, as they take around 30 seconds to run.
+If you want to run those tests, you can either store your email and password in
+the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env vars, or you can create an ini file like this:
 
 ::
 
