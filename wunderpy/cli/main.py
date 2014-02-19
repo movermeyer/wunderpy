@@ -4,10 +4,11 @@
 import argparse
 from datetime import date, timedelta
 
+import six
+
 from wunderpy import Wunderlist
 from .storage import get_token, setup
 import wunderpy.cli.colors as colors
-import wunderpy.cli.six as six
 
 
 class WunderlistCLI(object):
