@@ -94,7 +94,7 @@ class pretty_output():
 
     def write(self, msg):
         style = ''.join(self.attributes)
-        print('{}{}{}'.format(style, msg.replace(END, ALL_OFF + style),
+        print(u'{}{}{}'.format(style, msg.replace(END, ALL_OFF + style),
               ALL_OFF))
 
 
