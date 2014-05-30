@@ -1,4 +1,4 @@
-Authenticaton
+Authentication
 =============
 
 All requests (other than /login) require an HTTP header set with your token.
