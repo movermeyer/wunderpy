@@ -110,10 +110,10 @@ def set_note_for_task(note, task_id):
 def set_title_for_task(task_id, title):
     '''Set a task's title field.
 
-    :param title: The title's contents.
-    :type title: str
     :param task_id: The id of the task.
     :type task_id: str
+    :param title: The title's contents.
+    :type title: str
     :returns: Request
     '''
 
