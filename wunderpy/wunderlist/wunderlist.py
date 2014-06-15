@@ -146,6 +146,20 @@ class Wunderlist(api.APIClient):
         new_task = self.send_request(api.calls.complete_task(task_id))
         self.get_task(task_title, list_title).info = new_task
 
+    def update_task_due_date(self, task_title, due_date, recurrence_count=1, list_title="inbox"):
+        '''Complete a task with the given title in the given list.'''
+
+        task_id = self.id_for_task(task_title, list_title)
+        new_task = self.send_request(api.calls.set_task_due_date(task_id, due_date, recurrence_count))
+        self.get_task(task_title, list_title).info = new_task
+
+    def update_task_title(self, task_title, new_title, list_title="inbox"):
+        '''Complete a task with the given title in the given list.'''
+
+        task_id = self.id_for_task(task_title, list_title)
+        new_task = self.send_request(api.calls.set_title_for_task(task_id, new_title))
+        self.get_task(task_title, list_title).info = new_task
+
     def delete_task(self, task_title, list_title="inbox"):
         '''Delete a task'''
 
