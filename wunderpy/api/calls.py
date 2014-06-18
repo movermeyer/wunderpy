@@ -107,6 +107,20 @@ def set_note_for_task(note, task_id):
     return Request("PUT", url, data=body)
 
 
+def set_title_for_task(task_id, title):
+    '''Set a task's title field.
+
+    :param task_id: The id of the task.
+    :type task_id: str
+    :param title: The title's contents.
+    :type title: str
+    :returns: Request
+    '''
+
+    url = "{}/{}".format(API_URL, task_id)
+    body = {"title": title}
+    return Request("PUT", url, data=body)
+
 def set_task_due_date(task_id, due_date, recurrence_count=1):
     '''Set a task's due date.
 
