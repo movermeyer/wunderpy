@@ -12,6 +12,7 @@ Parameters
 :task_id: Passed in the URL.
 :note: The new note for the task.
 :due_date: The new due date for the task (ISO format as usual).
+:completed_at: The new complete date for the task (ISO format as usual). Setting this, will mark the task as completed.
 :recurrence_count: Not positive.
 
 Example Response
