@@ -6,6 +6,11 @@ import os.path
 
 from wunderpy import Wunderlist
 
+try:
+    input = raw_input  # python2.x
+except NameError:
+    pass
+
 
 def setup():
     '''Prompt the user for a wunderlist login, authenticate
@@ -16,14 +21,14 @@ def setup():
         '''Ask the user for login info.
         Returns a tuple with email, password'''
 
-        email = raw_input("Input your Wunderlist username (email): ")
+        email = input("Input your Wunderlist username (email): ")
         password = getpass.getpass(prompt="Input your Wunderlist password: ")
         print("Logging in...")
         wunderlist = Wunderlist()
         try:
             wunderlist.login(email, password)
         except:
-            again = raw_input("Login failed, try again? (y/n) ")
+            again = input("Login failed, try again? (y/n) ")
             if again == "y" or again == "Y":
                 prompt_login()
             else:
