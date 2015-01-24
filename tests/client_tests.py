@@ -6,9 +6,15 @@ from wunderpy.wunderlist.task_list import TaskList
 from wunderpy.wunderlist.task import Task
 
 
+try:
+    CLIENT_ID = config["login"]["client_id"]
+except:  # no config, so travis is running
+    CLIENT_ID = os.environ.get("WUNDERPY_CLIENT_ID")
+
+
 class TestClient(unittest.TestCase):
     def setUp(self):
-        self.wl = Wunderlist()
+        self.wl = Wunderlist(CLIENT_ID)
 
         # not calling update_lists, because it sends requests
         inbox_info = {"title": "inbox", "id": "inbox", "created_on": None,

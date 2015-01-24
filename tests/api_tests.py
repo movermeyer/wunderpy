@@ -10,9 +10,11 @@ from wunderpy import api
 try:
     EMAIL = config["login"]["email"]
     PASSWORD = config["login"]["password"]
+    CLIENT_ID = config["login"]["client_id"]
 except:  # no config, so travis is running
     EMAIL = os.environ.get("WUNDERPY_EMAIL")
     PASSWORD = os.environ.get("WUNDERPY_PASSWORD")
+    CLIENT_ID = os.environ.get("WUNDERPY_CLIENT_ID")
 
 if not EMAIL and not PASSWORD:
     __test__ = False
@@ -26,7 +28,7 @@ class TestAPI(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.wunderlist = Wunderlist()
+        cls.wunderlist = Wunderlist(CLIENT_ID)
         cls.wunderlist.login(EMAIL, PASSWORD)
 
 
@@ -36,19 +38,6 @@ class TestBasicRequests(TestAPI):
             self.wunderlist.login(EMAIL, PASSWORD)
         except:
             self.fail("Login failure")
-
-    def test_batch(self):
-        '''Test a simple request using /batch'''
-        me = api.calls.me()
-
-        try:
-            batch_results = self.wunderlist.send_requests([me])
-        except:
-            self.fail("Batch request failure")
-        me_result = next(batch_results)
-
-        # if we get a correct id value, everything probably worked on our end
-        self.assertEqual(self.wunderlist.id, me_result["id"])
 
     def test_me(self):
         '''Test some of the more trivial /me/* requests.'''

@@ -1,6 +1,5 @@
 '''Facilities for a client that only sends requests to the Wunderlist API'''
 
-
 import json
 import time
 
