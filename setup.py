@@ -14,7 +14,7 @@ setup(
     author_email="bsmt@bsmt.me",
     url="https://github.com/bsmt/wunderpy",
     license="MIT",
-    description="An experimental wrapper for the Wunderlist 2 API",
+    description="An experimental wrapper for the Wunderlist API",
     long_description=description,
     classifiers=['Development Status :: 4 - Beta',
                 'License :: OSI Approved :: MIT License',
@@ -28,6 +28,5 @@ setup(
                 'Topic :: Documentation',
                 'Environment :: Console'],
     packages=find_packages(exclude=("tests",)),
-    install_requires=["requests>=1.1.0", "python-dateutil==2.2"],
-    entry_points={'console_scripts': ['wunderlist = wunderpy.cli.main:main']}
+    install_requires=["requests>=1.1.0", "python-dateutil==2.2"]
 )
