@@ -6,22 +6,13 @@ import time
 
 from requests import Session
 
-from wunderpy.api.calls import batch, API_URL
+from wunderpy.api.calls import API_URL
 from wunderpy.api.calls import login as login_call
-
-
-def batch_format(request):
-    '''Make a dict compatible with wunderlist's batch endpoint.'''
-
-    request.url = request.url.replace(API_URL, "")
-
-    op = {"method": request.method, "url": request.url,
-          "params": request.data}
-    return op
 
 
 class APIClient(object):
     '''A class implementing all of the features needed to talk to Wunderlist'''
+
     def __init__(self):
         self.session = Session()
         self.token = None
@@ -71,25 +62,3 @@ class APIClient(object):
                 return r2.json()
         else:
             raise Exception(r.status_code, r)
-
-    def send_requests(self, api_requests, timeout=30):
-        '''Sends requests as a batch.
-
-        Returns a generator which will yield the server response for each
-        request in the order they were supplied.
-        You must run next() on the result at least once.
-
-        :param api_requests: a list of valid, prepared Request objects.
-        :type api_requests: list -- Made up of requests.Request objects
-        :yields: dict
-        '''
-
-        ops = [batch_format(req) for req in api_requests]
-
-        batch_request = batch(ops)
-        responses = self.send_request(batch_request)
-        for response in responses["results"]:
-            if response["status"] < 300:  # /batch is always 200
-                yield response["body"]
-            else:
-                raise Exception(response["status"])
