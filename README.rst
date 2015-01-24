@@ -3,11 +3,8 @@ wunderpy
 
 |Build Status| |Version| |Downloads|
 
-The goal of this project is to make `Wunderlist's`_ private and
-undocumented API less private and better documented, while also
-providing a python client implementation. I've explained how I figured
-out the API in a blog post `here`_, in case anyone is curious or wants
-to contribute.
+This here is a Wunderlist API wrapper for python. It was originally the only
+publicly available client for their API, and somehow became popular...
 
 You can read the documentation at `readthedocs.`_
 
@@ -44,11 +41,6 @@ Example
 Building the Docs
 -----------------
 
-Chances are, you're looking for information on how to use the API. I'm
-in the process of documenting everything in wunderpy. Information on the
-API, as well as the classes provided by wunderpy are documented with
-sphinx.
-
 To generate the documentation:
 
 ::
@@ -65,7 +57,7 @@ I'm working on writing tests for everything.
 If you want to run said tests, make sure you have nose installed. Once you have nose, all you have to do is run nosetests.
 
 By default, nose will not run any tests for the API calls, as they take around 30 seconds. If you want to run those tests, you can either store your email and password in
-the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testconfig and create an ini file like this: 
+the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testconfig and create an ini file like this:
 
 ::
 
@@ -82,6 +74,15 @@ First off, I can't thank you enough. This is my first open source project that r
 
 Changelog
 ---------
+
+0.3.0
+^^^^^
+
+* Remove the Wunderlist CLI.
+
+  * You can find a replacement `here`_
+
+* Switch to the Wunderlist 3 API.
 
 0.2.4
 ^^^^^
@@ -101,7 +102,7 @@ Changelog
 
   * Add --today and --week options
   * Only display incomplete tasks by default, add --show-complete option.
-  
+
 
 0.2.1
 ^^^^^
@@ -113,7 +114,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2013 bsmt
+Copyright (c) 2015 bsmt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -134,8 +135,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 .. _Wunderlist's: https://wunderlist.com
-.. _here: http://bsmt.me/reverse-engineering-the-wunderlist-api/
 .. _readthedocs.: http://wunderpy.readthedocs.org/en/latest/
+
+.. _here: https://github.com/bsmt/arbeit
 
 .. |Build Status| image:: https://travis-ci.org/bsmt/wunderpy.png
    :target: https://travis-ci.org/bsmt/wunderpy
