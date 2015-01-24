@@ -75,16 +75,11 @@ class Task(dict):
     @property
     def completed(self):
         '''Return the Task's completion status'''
-        if self.info.get("completed_at"):
-            return True
-        else:
-            return False
+
+        return bool(self.info.get("completed_at"))
 
     @property
     def starred(self):
         '''Is the Task starred?'''
 
-        if self.info.get("starred") == 1:
-            return True
-        else:
-            return False
+        return bool(self.info.get("starred"))
