@@ -6,19 +6,7 @@ import datetime
 from requests import Request
 
 
-API_URL = "https://api.wunderlist.com"
-COMMENTS_URL = "https://comments.wunderlist.com"
-
-
-def batch(ops):
-    '''Make a Request for a batch call.
-
-    :param ops: a list of pre-formatted requests
-    :returns: Request
-    '''
-
-    request_body = {"ops": ops, "sequential": True}
-    return Request("POST", "{}/batch".format(API_URL), data=request_body)
+API_URL = "https://a.wunderlist.com/api/v1"
 
 
 def login(email, password):
@@ -31,22 +19,35 @@ def login(email, password):
                    data={"email": email, "password": password})
 
 
-def me():
-    '''Request for /me, which returns user information.
+def get_user():
+    '''Request for /user, which returns user information.
 
     :returns: Request
     '''
 
-    return Request("GET", "{}/me".format(API_URL))
+    return Request("GET", "{}/user".format(API_URL))
 
 
-def get_all_tasks():
-    '''Get every task associated with the account.
+def get_tasks(list_id, completed=False):
+    '''Get tasks in a list.
 
+    :param list_id: The list'd ID.
+    :param completed: Return only completed tasks.
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/tasks".format(API_URL))
+    body = {"list_id": list_id, "completed": completed}
+    return Request("GET", "{}/tasks".format(API_URL), data=body)
+
+
+def get_task(task_id):
+    '''Get all information for a given task.
+
+    :param task_id: The tasks'd ID.
+    :returns: Request
+    '''
+
+    return Request("GET", "{}/tasks/{}".format(API_URL, task_id))
 
 
 def add_task(title, list_id, due_date=None, starred=False):
@@ -63,81 +64,80 @@ def add_task(title, list_id, due_date=None, starred=False):
     :returns: Request
     '''
 
-    if starred:
-        starred = 1
-    else:
-        starred = 0
-
-    body = {"list_id": list_id, "title": title, "starred": starred}
+    body = {"list_id": list_id, "title": title, "starred": int(starred)}
     if due_date:
         body["due_date"] = due_date  # should be in ISO format
 
-    return Request("POST", "{}/me/tasks".format(API_URL), data=body)
+    return Request("POST", "{}/tasks".format(API_URL), data=body)
 
 
-def complete_task(task_id, completed_at=None):
+def complete_task(task_id, revision):
     '''Mark a task as completed.
 
     :param task_id: The ID of the task you are completing.
     :type task_id: str
-    :param completed_at: The datetime it was completed at, in ISO format.
-    :type completed_at: str
-    '''
-
-    if not completed_at:
-        completed_at = datetime.datetime.now().isoformat()
-
-    url = "{}/{}".format(API_URL, task_id)
-    body = {"completed_at": completed_at, "position": 0}
-    return Request("PUT", url, data=body)
-
-
-def set_note_for_task(note, task_id):
-    '''Set a task's note field.
-
-    :param note: The note's contents.
-    :type note: str
-    :param task_id: The id of the task.
-    :type task_id: str
+    :param revision: The task's revision number.
     :returns: Request
     '''
 
-    url = "{}/{}".format(API_URL, task_id)
-    body = {"note": note}
-    return Request("PUT", url, data=body)
+    url = "{}/tasks/{}".format(API_URL, task_id)
+    body = {"revision": revision}
+    return Request("PATCH", url, data=body)
 
 
-def set_task_due_date(task_id, due_date, recurrence_count=1):
+def set_note_for_task(task_id, note):
+    '''Set a task's note field.
+
+    :param task_id: The id of the task.
+    :type task_id: str
+    :param note: The note's contents.
+    :type note: str
+    :returns: Request
+    '''
+
+    url = "{}/notes".format(API_URL)
+    body = {"content": note, "task_id": task_id}
+    return Request("POST", url, data=body)
+
+
+def set_task_due_date(task_id, due_date, revision):
     '''Set a task's due date.
 
     :param task_id: The id of the task.
     :type task_id: str
     :param due_date: The new due date in ISO format.
     :type due_date: str
-    :param recurrence_count: Not completely sure yet.
-    :type recurrence_count: int
+    :param revision: The tasks's revision number.
     :returns: Request
     '''
 
-    url = "{}/{}".format(API_URL, task_id)
-    body = {"due_date": due_date, "recurrence_count": recurrence_count}
-    return Request("PUT", url, data=body)
+    url = "{}/tasks/{}".format(API_URL, task_id)
+    body = {"due_date": due_date, "revision": revision}
+    return Request("PATCH", url, data=body)
 
 
-def delete_task(task_id, deleted_at=None):
+def delete_task(task_id, revision):
     '''Delete a task.
 
     :param task_id: The task's id.
     :type task_id: str
+    :param revision: The tasks's revision number.
     :returns: Request
     '''
 
-    if not deleted_at:
-        deleted_at = datetime.datetime.now().isoformat()
-
-    url = "{}/{}".format(API_URL, task_id)
-    body = {"deleted_at": deleted_at}
+    url = "{}/tasks/{}".format(API_URL, task_id)
+    body = {"revision": revision}
     return Request("DELETE", url, data=body)
+
+
+def get_list(list_id):
+    '''Get all information for one list.
+
+    :param list_id: The list's ID.
+    :returns: Request
+    '''
+
+    return Request("GET", "{}/lists/{}".format(API_URL, list_id))
 
 
 def get_lists():
@@ -146,7 +146,7 @@ def get_lists():
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/lists".format(API_URL))
+    return Request("GET", "{}/lists".format(API_URL))
 
 
 def add_list(list_name):
@@ -158,19 +158,21 @@ def add_list(list_name):
     '''
 
     body = {"title": list_name}
-    return Request("POST", "{}/me/lists".format(API_URL), data=body)
+    return Request("POST", "{}/lists".format(API_URL), data=body)
 
 
-def delete_list(list_id):
+def delete_list(list_id, revision):
     '''Delete a list and all of its contents.
 
     :param list_id: The id of the list to delete.
     :type list_id: str
+    :param revision: The tasks's revision number.
     :returns: Request
     '''
 
-    url = "{}/{}".format(API_URL, list_id)
-    return Request("DELETE", url)
+    url = "{}/lists{}".format(API_URL, list_id)
+    body = {"revision": revision}
+    return Request("DELETE", url, data=body)
 
 
 def get_comments(task_id):
@@ -180,8 +182,19 @@ def get_comments(task_id):
     :type task_id: str
     '''
 
-    url = "{}/tasks/{}/messages".format(COMMENTS_URL, task_id)
-    return Request("GET", url)
+    url = "{}/task_comments".format(API_URL)
+    body = {"task_id": task_id}
+    return Request("GET", url, data=body)
+
+
+def get_comment(comment_id):
+    '''Get all information about a single comment.
+
+    :param comment_id: The comment's ID.
+    :returns: Request
+    '''
+
+    return Request("GET", "{}/task_comments/{}".format(API_URL, comment_id))
 
 
 def add_comment(title, task_id):
@@ -194,19 +207,20 @@ def add_comment(title, task_id):
     :returns: Request
     '''
 
-    url = "{}/tasks/{}/messages".format(COMMENTS_URL, task_id)
-    body = {"channel_id": task_id, "channel_type": "tasks",
-            "text": title}
+    url = "{}/task_comments".format(API_URL, task_id)
+    body = {"task_id": task_id, "text": title}
     return Request("POST", url, data=body)
 
 
-def get_reminders():
-    '''Get a list of all reminders.
+def get_reminders(task_id):
+    '''Get a list of reminders for a task.
 
+    :param task_id: The task's ID.
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/reminders".format(API_URL))
+    body = {"task_id": task_id}
+    return Request("GET", "{}/reminders".format(API_URL), data=body)
 
 
 def set_reminder_for_task(task_id, date):
@@ -220,58 +234,60 @@ def set_reminder_for_task(task_id, date):
     '''
 
     body = {"task_id": task_id, "date": date}  # date is in ISO date format
-    return Request("POST", "{}/me/reminders".format(API_URL), data=body)
+    return Request("POST", "{}/reminders".format(API_URL), data=body)
 
 
-def get_shares():
-    '''Get a list of all things shared with you, I think...
-
-    :returns: Request
-    '''
-
-    return Request("GET", "{}/me/shares".format(API_URL))
-
-
-def get_services():
-    '''Not sure.
+def get_memberships():
+    '''Get a list of all things shared with you.
 
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/services".format(API_URL))
+    return Request("GET", "{}/memberships".format(API_URL))
 
 
-def get_events():
-    '''Not sure.
+def get_file(file_id):
+    '''Get all information about a file given its ID.
 
+    :param file_id: The file's ID.
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/events".format(API_URL))
+    return Request("GET", "{}/files/{}".format(API_URL, file_id))
 
 
-def get_settings():
-    '''Get account settings.
+def get_files(task_id):
+    '''Get a list of all files belonging to a task.
 
+    :param task_id: The task's ID.
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/settings".format(API_URL))
+    body = {"task_id": task_id}
+    return Request("GET", "{}/files".format(API_URL), data=body)
 
 
-def get_friends():
-    '''Get friends list.
+def add_file(task_id):
+    '''Add an empty file to a task.
 
+    Note that this will give you an S3 url where you upload the file to.
+
+    :param task_id: The task's ID.
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/friends".format(API_URL))
+    body = {"upload_id": 0, "task_id": task_id}
+    return Request("POST", "{}/files".format(API_URL), data=body)
 
 
-def get_quota():
-    '''Get your account's quota.
+def delete_file(file_id, revision):
+    '''Delete a file.
 
+    :param file_id: The file's ID.
+    :param revision: The file's revision number.
     :returns: Request
     '''
 
-    return Request("GET", "{}/me/quota".format(API_URL))
+    body = {"id": file_id, "revision": revision}
+    return Request("DELETE", "{}/files/{}".format(API_URL, file_id),
+                   data=body)
