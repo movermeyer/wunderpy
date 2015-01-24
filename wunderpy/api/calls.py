@@ -27,7 +27,7 @@ def get_avatar(user_id):
     :returns: Request
     '''
 
-    return Request("GET". "{}/avatar".format(API_URL))
+    return Request("GET", "{}/avatar".format(API_URL))
 
 
 ### File
@@ -298,7 +298,7 @@ def delete_note(note_id):
     :returns: Request
     '''
 
-    return Request("DELETE". "{}/notes/{}".format(API_URL, note_id))
+    return Request("DELETE", "{}/notes/{}".format(API_URL, note_id))
 
 
 ### Positions
