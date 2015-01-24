@@ -9,14 +9,15 @@ from requests import Request
 API_URL = "https://a.wunderlist.com/api/v1"
 
 
-def login(email, password):
+def login(email, password, client_id):
     '''Login request, so we can get a token.
 
     :returns: Request
     '''
 
-    return Request("POST", "{}/login".format(API_URL),
-                   data={"email": email, "password": password})
+    return Request("POST", "{}/authenticate".format(API_URL),
+                   data={"email": email, "password": password,
+                         "client_id": client_id})
 
 
 ### Avatar

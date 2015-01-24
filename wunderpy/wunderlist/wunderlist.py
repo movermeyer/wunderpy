@@ -12,8 +12,8 @@ from .task import Task
 class Wunderlist(api.APIClient):
     '''A basic Wunderlist client.'''
 
-    def __init__(self, lists=None):
-        api.APIClient.__init__(self)
+    def __init__(self, client_id, lists=None):
+        api.APIClient.__init__(self, client_id)
 
         if lists:
             self.lists = lists

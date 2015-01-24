@@ -13,23 +13,25 @@ from wunderpy.api.calls import login as login_call
 class APIClient(object):
     '''A class implementing all of the features needed to talk to Wunderlist'''
 
-    def __init__(self):
+    def __init__(self, client_id):
         self.session = Session()
         self.token = None
+        self.client_id = client_id
         self.id = None
-        self.headers = {"Content-Type": "application/json"}
+        self.headers = {"Content-Type": "application/json",
+                        "X-Client-ID": client_id}
 
     def login(self, email, password):
         '''Login to wunderlist'''
 
-        r = self.send_request(login_call(email, password))
-        self.set_token(r["token"])
+        r = self.send_request(login_call(email, password, self.client_id))
+        self.set_token(r["access_token"])
         self.id = r["id"]
 
     def set_token(self, token):
         '''Set token manually to avoid having to login repeatedly'''
         self.token = token
-        self.headers["Authorization"] = "Bearer {}".format(self.token)
+        self.headers["X-Access-Token"] = "Bearer {}".format(self.token)
 
     def send_request(self, request, timeout=30):
         '''Send a single request to Wunderlist in real time.
