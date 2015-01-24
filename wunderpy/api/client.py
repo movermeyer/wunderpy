@@ -31,7 +31,7 @@ class APIClient(object):
     def set_token(self, token):
         '''Set token manually to avoid having to login repeatedly'''
         self.token = token
-        self.headers["X-Access-Token"] = "Bearer {}".format(self.token)
+        self.headers["X-Access-Token"] = token
 
     def send_request(self, request, timeout=30):
         '''Send a single request to Wunderlist in real time.
