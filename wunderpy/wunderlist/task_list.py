@@ -55,7 +55,7 @@ class TaskList(dict):
 
         tasks = self.tasks_with_title(title)
         if len(tasks) >= 1:
-            #return most recent task
+            # return most recent task
             tasks = sorted(tasks, key=lambda t: t.created_at, reverse=True)
             return tasks[0]
         else:

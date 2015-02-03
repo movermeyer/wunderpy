@@ -20,7 +20,7 @@ def login(email, password, client_id):
                          "client_id": client_id})
 
 
-### Avatar
+# Avatar
 def get_avatar(user_id):
     '''Get the avatar for a user.
 
@@ -32,7 +32,7 @@ def get_avatar(user_id):
                    data={"user_id": user_id})
 
 
-### File
+# File
 def get_file(file_id):
     '''Get all information about a file given its ID.
 
@@ -80,7 +80,7 @@ def delete_file(file_id, revision):
                    data=body)
 
 
-### File preview
+# File preview
 def get_preview(file_id):
     '''Request a thumbnail for an image.
 
@@ -92,7 +92,7 @@ def get_preview(file_id):
     return Request("GET", "{}/previews".format(API_URL), data=body)
 
 
-### List
+# List
 def get_lists():
     '''Get all of the task lists
 
@@ -176,7 +176,7 @@ def delete_list(list_id, revision):
     return Request("DELETE", url, params={"revision": revision})
 
 
-### Membership
+# Membership
 def get_memberships():
     '''Get a list of all things shared with you.
 
@@ -241,7 +241,7 @@ def reject_invitation(membership_id, revision):
     return re
 
 
-### Note
+# Note
 def get_notes(task_id):
     '''Get the notes for a task.
 
@@ -303,8 +303,8 @@ def delete_note(note_id, revision):
                    params={"revision": revision})
 
 
-### Positions
-### I don't really care about this stuff, but I'll put it in anyways.
+# Positions
+# I don't really care about this stuff, but I'll put it in anyways.
 def get_list_positions():
     '''Get the order of all lists..
 
@@ -383,7 +383,7 @@ def update_subtask_positions(task_id, subtasks, revision):
     return re
 
 
-### Reminder
+# Reminder
 def get_reminders(task_id):
     '''Get a list of reminders for a task.
 
@@ -435,7 +435,7 @@ def delete_reminder(reminder_id, revision):
                    params={"id": reminder_id, "revision": revision})
 
 
-### Subtask
+# Subtask
 def get_subtasks(task_id, completed=False):
     '''Get all subtasks for a task.
 
@@ -508,7 +508,7 @@ def delete_subtask(subtask_id, revision):
                    params={"revision": revision})
 
 
-### Task
+# Task
 def get_tasks(list_id, completed=False):
     '''Get tasks in a list.
 
@@ -629,7 +629,7 @@ def delete_task(task_id, revision):
     return Request("DELETE", url, params=body)
 
 
-### Task comment
+# Task comment
 def get_comments(task_id):
     '''Get all comments from the specified task.
 
@@ -667,7 +667,7 @@ def add_comment(title, task_id):
     return Request("POST", url, data=body)
 
 
-### Upload
+# Upload
 def create_upload(content_type, file_name, file_size):
     '''Create an upload object for a file.
 
@@ -693,7 +693,7 @@ def finish_upload(upload_id):
                    data={"state": "finished"})
 
 
-### User
+# User
 def get_user():
     '''Request for /user, which returns user information.
 
