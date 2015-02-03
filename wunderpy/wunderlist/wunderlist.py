@@ -15,10 +15,7 @@ class Wunderlist(api.APIClient):
     def __init__(self, client_id, lists=None):
         api.APIClient.__init__(self, client_id)
 
-        if lists:
-            self.lists = lists
-        else:
-            self.lists = []
+        self.lists = lists or []
 
     def __repr__(self):
         "<wunderpy.Wunderlist: {}>".format(self.token)
@@ -35,8 +32,8 @@ class Wunderlist(api.APIClient):
         # delete any currently stored lists
         self.lists = []
 
-        tasks, lists = self.send_requests([api.calls.get_all_tasks(),
-                                          api.calls.get_lists()])
+        tasks, lists = self.send_requests([api.calls.get_tasks(),
+                                           api.calls.get_lists()])
 
         # make inbox list
         inbox_info = {"title": "inbox", "id": "inbox", "created_on": None,
@@ -66,7 +63,7 @@ class Wunderlist(api.APIClient):
     def lists_with_title(self, list_title):
         '''Return all TaskLists with the given title.'''
 
-        return [list for list in self.lists if list.title == list_title]
+        return [l for l in self.lists if l.title == list_title]
 
     def tasks_for_list(self, list_title):
         '''Get all tasks belonging to a list.'''
@@ -107,7 +104,7 @@ class Wunderlist(api.APIClient):
         return list(tasks)
 
     def add_task(self, title, list_title="inbox", note=None, due_date=None,
-                 starred=False, **kwargs):
+                 starred=False):
         '''Create a new task.
 
         :param title: The task's name.
@@ -121,10 +118,6 @@ class Wunderlist(api.APIClient):
         :param starred: If the task should be starred.
         :type starred: bool
         '''
-
-        # for API compatibility til 0.3
-        if "list" in kwargs:
-            list_title = kwargs["list"]
 
         list_id = self.id_for_list(list_title)
         add_task = api.calls.add_task(title, list_id, due_date=due_date,

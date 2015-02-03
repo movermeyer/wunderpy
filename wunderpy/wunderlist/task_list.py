@@ -84,3 +84,8 @@ class TaskList(dict):
         '''Return all incomplete tasks.'''
 
         return [task for task in self.tasks if task.completed is not True]
+
+    def filter_tasks(self, predicate):
+        '''Return all tasks for which the given function returns True.'''
+
+        return [task for task in self.tasks if predicate(task)]
