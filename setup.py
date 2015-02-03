@@ -9,7 +9,7 @@ except:
 
 setup(
     name="wunderpy",
-    version="0.2.4",
+    version="0.3.0",
     author="bsmt",
     author_email="bsmt@bsmt.me",
     url="https://github.com/bsmt/wunderpy",

@@ -13,7 +13,7 @@ class Task(dict):
         :type info: dict
         :param parent_list: The TaskList this Task belongs to.
         :type parent_list: TaskList
-        :param subtasks: A list of Task objects belonging to this TAsk.
+        :param subtasks: A list of Task objects belonging to this Task.
         :type subtasks: list or None
         '''
 

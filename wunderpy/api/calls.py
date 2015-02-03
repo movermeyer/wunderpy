@@ -28,7 +28,8 @@ def get_avatar(user_id):
     :returns: Request
     '''
 
-    return Request("GET", "{}/avatar".format(API_URL))
+    return Request("GET", "{}/avatar".format(API_URL),
+                   data={"user_id": user_id})
 
 
 ### File
@@ -119,7 +120,7 @@ def get_number_of_tasks(list_id):
     '''
 
     return Request("GET", "{}/lists/tasks_count".format(API_URL),
-                   data={"list_id": list_id})
+                   params={"list_id": list_id})
 
 
 def add_list(list_name):
@@ -171,9 +172,8 @@ def delete_list(list_id, revision):
     :returns: Request
     '''
 
-    url = "{}/lists{}".format(API_URL, list_id)
-    body = {"revision": revision}
-    return Request("DELETE", url, data=body)
+    url = "{}/lists/{}".format(API_URL, list_id)
+    return Request("DELETE", url, params={"revision": revision})
 
 
 ### Membership
@@ -250,7 +250,7 @@ def get_notes(task_id):
     '''
 
     return Request("GET", "{}/notes".format(API_URL),
-                   data={"task_id": task_id})
+                   params={"task_id": task_id})
 
 
 def get_note(note_id):
@@ -292,14 +292,15 @@ def update_note(note_id, new_content, revision):
                    data=body)
 
 
-def delete_note(note_id):
+def delete_note(note_id, revision):
     '''Delete a note.
 
     :param note_id: The note's ID.
     :returns: Request
     '''
 
-    return Request("DELETE", "{}/notes/{}".format(API_URL, note_id))
+    return Request("DELETE", "{}/notes/{}".format(API_URL, note_id),
+                   params={"revision": revision})
 
 
 ### Positions
@@ -391,7 +392,7 @@ def get_reminders(task_id):
     '''
 
     body = {"task_id": task_id}
-    return Request("GET", "{}/reminders".format(API_URL), data=body)
+    return Request("GET", "{}/reminders".format(API_URL), params=body)
 
 
 def set_reminder_for_task(task_id, date):
@@ -431,7 +432,7 @@ def delete_reminder(reminder_id, revision):
     '''
 
     return Request("DELETE", "{}/reminders/{}".format(API_URL, reminder_id),
-                   data={"id": reminder_id, "revision": revision})
+                   params={"id": reminder_id, "revision": revision})
 
 
 ### Subtask
@@ -444,7 +445,7 @@ def get_subtasks(task_id, completed=False):
     '''
 
     return Request("GET", "{}/subtasks".format(API_URL),
-                   data={"task_id": task_id, "completed": completed})
+                   params={"task_id": task_id, "completed": completed})
 
 
 def get_subtask(subtask_id):
@@ -503,7 +504,8 @@ def delete_subtask(subtask_id, revision):
     :returns: Request
     '''
 
-    return Request("DELETE", "{}/subtasks/{}".format(API_URL, subtask_id))
+    return Request("DELETE", "{}/subtasks/{}".format(API_URL, subtask_id),
+                   params={"revision": revision})
 
 
 ### Task
@@ -516,7 +518,7 @@ def get_tasks(list_id, completed=False):
     '''
 
     body = {"list_id": list_id, "completed": completed}
-    return Request("GET", "{}/tasks".format(API_URL), data=body)
+    return Request("GET", "{}/tasks".format(API_URL), params=body)
 
 
 def get_task(task_id):
@@ -543,7 +545,7 @@ def add_task(title, list_id, due_date=None, starred=False):
     :returns: Request
     '''
 
-    body = {"list_id": list_id, "title": title, "starred": int(starred)}
+    body = {"list_id": list_id, "title": title, "starred": starred}
     if due_date:
         body["due_date"] = due_date  # should be in ISO format
 
@@ -560,7 +562,7 @@ def complete_task(task_id, revision):
     '''
 
     url = "{}/tasks/{}".format(API_URL, task_id)
-    body = {"revision": revision}
+    body = {"revision": revision, "completed": True}
     return Request("PATCH", url, data=body)
 
 
@@ -609,7 +611,8 @@ def set_task_title(task_id, new_title, revision):
     '''
 
     url = "{}/tasks/{}".format(API_URL, task_id)
-    return Request("PATCH", url, data={"title": title, "revision": revision})
+    return Request("PATCH", url, data={"title": new_title,
+                                       "revision": revision})
 
 
 def delete_task(task_id, revision):
@@ -623,7 +626,7 @@ def delete_task(task_id, revision):
 
     url = "{}/tasks/{}".format(API_URL, task_id)
     body = {"revision": revision}
-    return Request("DELETE", url, data=body)
+    return Request("DELETE", url, params=body)
 
 
 ### Task comment
@@ -636,7 +639,7 @@ def get_comments(task_id):
 
     url = "{}/task_comments".format(API_URL)
     body = {"task_id": task_id}
-    return Request("GET", url, data=body)
+    return Request("GET", url, params=body)
 
 
 def get_comment(comment_id):

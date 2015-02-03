@@ -53,13 +53,15 @@ class APIClient(object):
         r = self.session.send(request.prepare(), timeout=timeout)
 
         if r.status_code < 300:
-            return r.json()
-        elif r.status_code == 404:  # dirty hack around this timing bullshit
-            time.sleep(1)
-            r2 = self.session.send(request.prepare(), timeout=timeout)
-            if r2.status_code == 404:  # still doesn't work
-                raise Exception(r2.status_code, r2)
-            else:
-                return r2.json()
+            try:
+                return r.json()
+            except UnicodeDecodeError:
+                return r.text
+            except ValueError:
+                return r.text
         else:
-            raise Exception(r.status_code, r)
+            raise Exception(r.status_code, r, r.text)
+
+    def send_requests(self, requests, timeout=30):
+        for r in requests:
+            yield self.send_request(r, timeout=timeout)
