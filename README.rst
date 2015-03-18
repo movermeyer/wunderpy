@@ -3,21 +3,15 @@ wunderpy
 
 |Build Status| |Version| |Downloads|
 
-The goal of this project is to make `Wunderlist's`_ private and
-undocumented API less private and better documented, while also
-providing a python client implementation. I've explained how I figured
-out the API in a blog post `here`_, in case anyone is curious or wants
-to contribute.
-
 You can read the documentation at `readthedocs.`_
 
-Disclaimer
+Current State
 ----------
 
-In no way is this project near complete or perfect. There are a lot of
-things that can be done better, especially design-wise, that I'm trying
-to fix as I learn more. Things are liable to change or break
-unexpectedly.
+Wunderlist's official API is out. I have all of the new calls implemented, but some core changes need to be made to support
+their revision system. They have likely taken down the old API, so for the time being *this library does not work*.
+I'm not providing an ETA because I have too many projects which are more interesting/important, and frankly maintaining this
+library is about as tedious and boring as a liberal arts school poetry slam.
 
 Example
 -------
