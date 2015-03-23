@@ -28,5 +28,6 @@ setup(
                 'Topic :: Documentation',
                 'Environment :: Console'],
     packages=find_packages(exclude=("tests",)),
-    install_requires=["requests>=1.1.0", "python-dateutil==2.2"]
+    install_requires=["requests>=1.1.0",
+                      "python-dateutil==2.2"]
 )

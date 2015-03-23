@@ -38,23 +38,37 @@ Example
 
     w.delete_list("test")  # and delete the list
 
-Building the Docs
------------------
+Buildout
+--------
 
-To generate the documentation:
+To generate scripts for testing and documentation run buildout. For details
+about buildout see http://www.buildout.org/en/latest/docs/index.html
 
 ::
 
-    cd docs
-    make html # other options are available
-    # look in the docs/build/html dir for the documentation
+    python bootstrap.py
+    bin/buildout
+
+Building the Docs
+-----------------
+
+Building the documentation can be done with the script bin/build_docs:
+
+::
+
+    bin/build_docs
+    open docs/html/index.html
 
 Running Tests
 -------------
 
 I'm working on writing tests for everything.
 
-If you want to run said tests, make sure you have nose installed. Once you have nose, all you have to do is run nosetests.
+If you want to run said tests, make sure you have run the buildout. Once you have nose, all you have to do is run the tests.
+
+::
+
+    bin/test
 
 By default, nose will not run any tests for the API calls, as they take around 30 seconds. If you want to run those tests, you can either store your email and password in
 the WUNDERPY_EMAIL and WUNDERPY_PASSWORD env_vars, or you can install nose-testconfig and create an ini file like this:
@@ -77,6 +91,8 @@ Changelog
 
 0.3.0
 ^^^^^
+
+* added buildout to project
 
 * Remove the Wunderlist CLI.
 
