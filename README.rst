@@ -138,9 +138,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 .. |Build Status| image:: https://travis-ci.org/bsmt/wunderpy.png
    :target: https://travis-ci.org/bsmt/wunderpy
-.. |Version| image:: https://pypip.in/v/wunderpy/badge.png
+.. |Version| image:: https://img.shields.io/pypi/v/wunderpy.svg
     :target: https://pypi.python.org/pypi/wunderpy
-.. |Downloads| image:: https://pypip.in/d/wunderpy/badge.png
+.. |Downloads| image:: https://img.shields.io/pypi/dm/wunderpy.svg
     :target: https://crate.io/packages/wunderpy/
 
 .. _gitflow: http://nvie.com/posts/a-successful-git-branching-model/
